@@ -1,4 +1,12 @@
-const Navbar = () => {
+import { useState } from "react";
+
+const Header = () => {
+  const [isDivVisible, setDivVisibility] = useState(false);
+
+  const toggleDivVisibility = () => {
+    setDivVisibility(!isDivVisible);
+  };
+
   return (
     <nav className="bg-customColor p-4 sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center">
@@ -20,17 +28,18 @@ const Navbar = () => {
           </a>
         </div>
 
-        <div className="flex items-center">
-          <img
-            src="https://placekitten.com/32/32"
-            alt="Profile"
-            className="rounded-full h-8 w-8"
-          />
-          <span className="text-white text-lg ml-2">Aminul</span>
-        </div>
+        <nav>
+          <button onClick={toggleDivVisibility}>Toggle Div</button>
+        </nav>
       </div>
+
+      {isDivVisible && (
+        <div>
+          <p>This is a simple div.</p>
+        </div>
+      )}
     </nav>
   );
 };
 
-export default Navbar;
+export default Header;
