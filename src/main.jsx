@@ -7,6 +7,7 @@ import Pagination from "./components/Pagination/Pagination";
 import BlogList from "./components/Body/BlogList";
 import ToggleSidebar from "./components/Sidebar/ToggleSidebar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import RegistrationForm from "./components/UserForm/UserForm.jsx";
 
 const BlogCard = {
   title: "Classical Literature",
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "team",
         element: <ToggleSidebar />,
+      },
+      {
+        path: "/registration",
+        element: <RegistrationForm />,
       },
       {
         path: "team",

@@ -3,7 +3,7 @@ import Footer from "./components/Footer/Footer";
 import { Outlet } from "react-router-dom";
 function App() {
   return (
-    <div className="mb-10">
+    <div className="mb-5">
       <div>
         <Header />
       </div>
