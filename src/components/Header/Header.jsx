@@ -9,7 +9,7 @@ const Header = ({ isToken }) => {
     isToken: PropTypes.bool.isRequired,
     // Add any other propTypes if needed
   };
-  
+
   const [isDropDown, setDropDown] = useState(false);
 
   const handleDropDown = () => {
