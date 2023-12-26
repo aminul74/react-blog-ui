@@ -1,12 +1,34 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 const BlogList = () => {
-  const blogs = [
-    {
-      id: 1,
-      author: "John Doe",
-      title: "React Basics",
-      content: "This is the content of the React Basics blog.",
-    },
-  ];
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = () => {
+      axios
+        .get("http://localhost:4001/api/v1/blogs", {
+          params: {
+            title: "",
+            content: "",
+          },
+        })
+        .then((Response) => {
+          console.log("XXXX", Response.data);
+          setLoading(false);
+          setBlogs(Response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching blogs:", error);
+        });
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <h2 className="text-center mt-5 text-white">Loading...</h2>;
+  }
 
   const handleEdit = (blogId) => {
     console.log(`Editing blog with ID ${blogId}`);

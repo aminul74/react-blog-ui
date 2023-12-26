@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 // import AuthForm from "../UserForm/UserForm";
 // useHistory
 
 const Header = ({ isToken }) => {
+  Header.propTypes = {
+    isToken: PropTypes.bool.isRequired,
+    // Add any other propTypes if needed
+  };
+  
   const [isDropDown, setDropDown] = useState(false);
 
   const handleDropDown = () => {
@@ -26,12 +32,14 @@ const Header = ({ isToken }) => {
           >
             Home
           </Link>
-          <a
-            href="#"
-            className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
-          >
-            Create Blog
-          </a>
+          {!isToken ? null : (
+            <Link
+              to="/create-blog"
+              className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
+            >
+              Create Blog
+            </Link>
+          )}
 
           <div className="Search flex">
             <input
