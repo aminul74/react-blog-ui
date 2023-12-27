@@ -15,9 +15,9 @@ const BlogList = () => {
           },
         })
         .then((Response) => {
-          console.log("XXXX", Response.data);
           setLoading(false);
           setBlogs(Response.data);
+          console.log("XXX", blogs);
         })
         .catch((error) => {
           console.error("Error fetching blogs:", error);

@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useAuth } from "../../Hooks/useHooks";
 // import AuthForm from "../UserForm/UserForm";
 // useHistory
 
-const Header = ({ isToken }) => {
+const Header = () => {
   Header.propTypes = {
     isToken: PropTypes.bool.isRequired,
-    // Add any other propTypes if needed
   };
+
+  const { token, logout } = useAuth();
+
+  // const handleButtonVisibility = () => {
+  //   setToken(!token);
+  // };
 
   const [isDropDown, setDropDown] = useState(false);
 
@@ -32,7 +38,7 @@ const Header = ({ isToken }) => {
           >
             Home
           </Link>
-          {!isToken ? null : (
+          {!token ? null : (
             <Link
               to="/create-blog"
               className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
@@ -58,7 +64,7 @@ const Header = ({ isToken }) => {
 
         {/* Signup */}
 
-        {!isToken && (
+        {!token && (
           <div>
             <Link
               to="/login"
@@ -72,7 +78,7 @@ const Header = ({ isToken }) => {
 
         {/* Profile */}
 
-        {isToken && (
+        {token && (
           <div className="relative inline-block text-left">
             <button
               type="button"
@@ -104,6 +110,9 @@ const Header = ({ isToken }) => {
                   <button
                     className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"
+                    onClick={() => {
+                      logout();
+                    }}
                   >
                     Logout
                   </button>

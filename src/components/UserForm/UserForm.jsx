@@ -1,68 +1,60 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Hooks/useHooks";
 
-
-const AuthForm = ({ handleButtonVisibility }) => {
-
+const AuthForm = () => {
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [isregister, setisregister] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    axios
-      .post(
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
         "http://localhost:4001/api/v1/auth/login",
-        {
-          username,
-          password,
-        },
+        { username, password },
         {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
         }
-      )
-      .then((response) => {
-        const { token } = response.data[0];
-        console.log(token);
-        setisregister(!isregister);
-        handleButtonVisibility();
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error during login:", error);
-      });
+      );
+      const { token } = response.data[0];
+      login(token);
+      navigate("/");
+    } catch (error) {
+      console.error("Error login:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSignup = () => {
-    axios
-      .post(
+  const handleSignup = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
         "http://localhost:4001/api/v1/auth/register",
-        {
-          username,
-          email,
-          password,
-        },
+        { username, email, password },
         {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
         }
-      )
-      .then((response) => {
-        const { token } = response.data[0];
-        console.log(token);
-        setisregister(!isregister);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error during signup:", error);
-      });
+      );
+      const { token } = response.data[0];
+      setLoading(false);
+      login(token);
+      navigate("/");
+    } catch (error) {
+      console.error("Error Signup:", error);
+    }
   };
 
   const handleSubmit = () => {
@@ -135,11 +127,14 @@ const AuthForm = ({ handleButtonVisibility }) => {
         </div>
 
         <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none hover:bg-blue-700"
+          className={`bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none hover:bg-blue-700 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           type="submit"
           onClick={handleSubmit}
+          disabled={loading}
         >
-          {isregister ? "Signup" : "Login"}
+          {loading ? "Processing..." : isregister ? "Signup" : "Login"}
         </button>
         <div className="float-right">
           <button

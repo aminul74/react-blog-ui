@@ -1,25 +1,25 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Hooks/useHooks";
+
 const BlogForm = () => {
-  const [isToken, setToken] = useState(
-    "Beaer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg3YmI0ZGU4LTcyZmMtNGRhZi04OTk2LTgzN2RmMjJmZTQ1NCIsImlhdCI6MTcwMzU5NTY2MH0.7dK_PlGjsFq-1-5Wq9G3G-YRpmRLdTKjpG2i03Uw91w"
-  );
+  const { token } = useAuth();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateBlog = (event) => {
+  const handleCreateBlog = async (event) => {
     event.preventDefault();
 
-    if (!isToken) {
+    if (!token) {
       setErrorMessage("You must be logged in to create a blog.");
       return;
     }
 
-    axios
-      .post(
+    try {
+      const response = await axios.post(
         "http://localhost:4001/api/v1/blogs/create",
         {
           title,
@@ -29,21 +29,20 @@ const BlogForm = () => {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization: isToken,
+            Authorization: `Bearer ${token}`,
           },
         }
-      )
-      .then((response) => {
-        console.log("Blog created successfully:", response.data);
-        setTitle("");
-        setContent("");
-        setErrorMessage("");
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("Error creating the blog. Please try again.");
-      });
+      );
+
+      console.log("Blog created successfully:", response.data);
+      setTitle("");
+      setContent("");
+      setErrorMessage("");
+      navigate("/");
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Error creating the blog. Please try again.");
+    }
   };
 
   return (
@@ -84,9 +83,9 @@ const BlogForm = () => {
         <button
           type="submit"
           className={`bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none hover:bg-blue-700 ${
-            !isToken ? "opacity-50 cursor-not-allowed" : ""
+            !token ? "opacity-50 cursor-not-allowed" : ""
           }`}
-          disabled={!isToken}
+          disabled={!token}
         >
           Submit
         </button>
