@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../Hooks/useHooks";
+import { useAuth } from "../../Hooks/AuthContext";
 
 const AuthForm = () => {
   const { login } = useAuth();
@@ -25,8 +25,22 @@ const AuthForm = () => {
           },
         }
       );
+
       const { token } = response.data[0];
-      login(token);
+
+      const userData = await axios.get(
+        "http://localhost:4001/api/v1/users/my-profile",
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const user = userData.data[0];
+      // console.log("token :", token, "user :", user.id);
+      login(token, user);
       navigate("/");
     } catch (error) {
       console.error("Error login:", error);

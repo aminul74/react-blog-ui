@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../Hooks/useHooks";
+import { useAuth } from "../../Hooks/AuthContext";
 
 const BlogForm = () => {
   const { token } = useAuth();

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../../Hooks/useHooks";
+import { useAuth } from "../../Hooks/AuthContext";
 // import AuthForm from "../UserForm/UserForm";
 // useHistory
 
