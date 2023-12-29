@@ -12,6 +12,19 @@ const AuthForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const getUser = async (token) => {
+    return await axios.get(
+      "http://localhost:4001/api/v1/users/my-profile",
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
+
   const handleLogin = async () => {
     try {
       setLoading(true);
@@ -27,19 +40,8 @@ const AuthForm = () => {
       );
 
       const { token } = response.data[0];
-
-      const userData = await axios.get(
-        "http://localhost:4001/api/v1/users/my-profile",
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const userData =await getUser(token);
       const user = userData.data[0];
-      // console.log("token :", token, "user :", user.id);
       login(token, user);
       navigate("/");
     } catch (error) {
@@ -64,7 +66,9 @@ const AuthForm = () => {
       );
       const { token } = response.data[0];
       setLoading(false);
-      login(token);
+      const userData =await getUser(token);
+      const user = userData.data[0];
+      login(token, user);
       navigate("/");
     } catch (error) {
       console.error("Error Signup:", error);

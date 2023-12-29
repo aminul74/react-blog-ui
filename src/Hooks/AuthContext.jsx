@@ -12,8 +12,6 @@ const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user")) || null
   );
 
-  console.log("User", user.id)
-
   const login = (newToken, newUser) => {
     setToken(newToken);
     setUser(newUser);

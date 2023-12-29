@@ -9,7 +9,7 @@ const BlogList = () => {
   const [editingBlogId, setEditingBlogId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
-
+  const [showFullContent, setShowFullContent] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -98,6 +98,13 @@ const BlogList = () => {
     return <h2 className="text-center mt-5 text-white">Loading...</h2>;
   }
 
+  const truncateContent = (content) => {
+    const maxLength = 100;
+    return content.length > maxLength
+      ? `${content.substring(0, maxLength)}...`
+      : content;
+  };
+
   return (
     <div className="container mx-auto my-5">
       {blogs.map((blog) => (
@@ -134,9 +141,23 @@ const BlogList = () => {
               <p className="text-lg text-gray-600 mb-2">
                 Author: {blog.authorId}
               </p>
-              <p className="text-lg text-gray-800">{blog.content}</p>
+              {showFullContent ? (
+                <p className="text-lg text-gray-800">{blog.content}</p>
+              ) : (
+                <p className="text-lg text-gray-800">
+                  {truncateContent(blog.content)}
+                </p>
+              )}
 
-              {user.id === blog.authorId && (
+              {blog.content.length > 100 && (
+                <button
+                  onClick={() => setShowFullContent(!showFullContent)}
+                  className="text-blue-500 hover:underline focus:outline-none"
+                >
+                  {showFullContent ? "See Less" : "See More"}
+                </button>
+              )}
+              {user?.id === blog.authorId && (
                 <div className="absolute top-0 right-0 p-2 cursor-pointer">
                   <button
                     className="text-lg text-gray-500 hover:text-gray-700"
