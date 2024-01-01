@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 const AuthContext = createContext();
 
@@ -11,6 +12,16 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null
   );
+
+  const getUser = async (token) => {
+    return await axios.get("http://localhost:4001/api/v1/users/my-profile", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+  };
 
   const login = (newToken, newUser) => {
     setToken(newToken);
@@ -27,7 +38,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, user }}>
+    <AuthContext.Provider value={{ token, login, logout, user, getUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,20 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../../Hooks/AuthContext";
-// import AuthForm from "../UserForm/UserForm";
-// useHistory
+import Profile from "../Profile/Profile";
+import Navbar from "../Navbar/Navbar";
 
 const Header = () => {
   Header.propTypes = {
     isToken: PropTypes.bool.isRequired,
   };
 
-  const { token, logout } = useAuth();
-
-  // const handleButtonVisibility = () => {
-  //   setToken(!token);
-  // };
-
+  const { token, logout, user } = useAuth();
   const [isDropDown, setDropDown] = useState(false);
 
   const handleDropDown = () => {
@@ -31,52 +26,18 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="flex items-center space-x-10">
-          <Link
-            to="/"
-            className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
-          >
-            Home
-          </Link>
-          {!token ? null : (
-            <Link
-              to="/create-blog"
-              className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
-            >
-              Create Blog
-            </Link>
-          )}
-
-          <div className="Search flex">
-            <input
-              type="text"
-              className="bg-gray-800 text-white rounded-l-full py-2 px-4 focus:outline-none"
-              placeholder="Search..."
-            />
-            <a
-              href="#"
-              className="bg-gray-800 text-white rounded-r-full px-4 py-2 hover:bg-gray-600"
-            >
-              Search
-            </a>
-          </div>
-        </div>
-
-        {/* Signup */}
+        <Navbar isLoggedIn={token} />
 
         {!token && (
           <div>
             <Link
               to="/login"
-              // href="#"
               className="flex items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
             >
               Log In
             </Link>
           </div>
         )}
-
-        {/* Profile */}
 
         {token && (
           <div className="relative inline-block text-left">
@@ -87,38 +48,13 @@ const Header = () => {
             >
               <img
                 className="w-6 h-6 rounded-full"
-                src="src/assets/logo.png"
+                src="src/assets/user.png"
                 alt="Profile"
               />
-              <span className="mr-2 ml-2">Aminul</span>
+              <span className="mr-2 ml-2">{user.username}</span>
             </button>
 
-            {isDropDown ? (
-              <div className="origin-top-left absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white">
-                <div
-                  className="py-1"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="options-menu"
-                >
-                  <button
-                    className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem"
-                  >
-                    Profile
-                  </button>
-                  <button
-                    className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                    role="menuitem"
-                    onClick={() => {
-                      logout();
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            ) : null}
+            {isDropDown ? <Profile logout={logout} /> : null}
           </div>
         )}
       </div>

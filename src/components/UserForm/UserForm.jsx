@@ -2,28 +2,18 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Hooks/AuthContext";
+import InputField from "../Input-Field/InputField";
+import Button from "../Button/Button";
 
 const AuthForm = () => {
-  const { login } = useAuth();
+  const { login, getUser } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [isregister, setisregister] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  const getUser = async (token) => {
-    return await axios.get(
-      "http://localhost:4001/api/v1/users/my-profile",
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  };
 
   const handleLogin = async () => {
     try {
@@ -40,19 +30,23 @@ const AuthForm = () => {
       );
 
       const { token } = response.data[0];
-      const userData =await getUser(token);
+      setLoading(false);
+      const userData = await getUser(token);
       const user = userData.data[0];
       login(token, user);
       navigate("/");
     } catch (error) {
       console.error("Error login:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleSignup = async () => {
     try {
+      if (password !== confirmPassword) {
+        console.error("Password and confirmation password do not match");
+        return;
+      }
+
       setLoading(true);
       const response = await axios.post(
         "http://localhost:4001/api/v1/auth/register",
@@ -64,9 +58,10 @@ const AuthForm = () => {
           },
         }
       );
+
       const { token } = response.data[0];
       setLoading(false);
-      const userData =await getUser(token);
+      const userData = await getUser(token);
       const user = userData.data[0];
       login(token, user);
       navigate("/");
@@ -96,9 +91,8 @@ const AuthForm = () => {
           >
             Username
           </label>
-          <input
+          <InputField
             id="username"
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
             type="text"
             value={username}
             onChange={(e) => {
@@ -115,9 +109,8 @@ const AuthForm = () => {
             >
               Email
             </label>
-            <input
+            <InputField
               id="email"
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
               type="text"
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -133,9 +126,8 @@ const AuthForm = () => {
           >
             Password
           </label>
-          <input
+          <InputField
             id="password"
-            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
             type="password"
             value={password}
             onChange={(e) => {
@@ -144,8 +136,27 @@ const AuthForm = () => {
           />
         </div>
 
-        <button
-          className={`bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none hover:bg-blue-700 ${
+        {isregister && (
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="confirmPassword"
+            >
+              Confirm Password
+            </label>
+            <InputField
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
+            />
+          </div>
+        )}
+
+        <Button
+          className={`bg-blue-500 text-white font-bold py-2 px-4 rounded ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           type="submit"
@@ -153,16 +164,16 @@ const AuthForm = () => {
           disabled={loading}
         >
           {loading ? "Processing..." : isregister ? "Signup" : "Login"}
-        </button>
+        </Button>
         <div className="float-right">
-          <button
+          <Button
             className="md:underline"
             onClick={() => {
               setisregister(!isregister);
             }}
           >
             {isregister ? "Login here" : "Signup here"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
