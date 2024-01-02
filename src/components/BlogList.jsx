@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../Hooks/AuthContext";
-import Button from "../Button/Button";
-import InputField from "../Input-Field/InputField";
+import { useAuth } from "../Hooks/AuthContext";
+import InputField from "./InputField";
+import Button from "./Button";
 
 const BlogList = () => {
+  const { token, user } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingBlogId, setEditingBlogId] = useState(true);
+  const [editingBlogId, setEditingBlogId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [showFullContent, setShowFullContent] = useState(false);
-  const { token, user } = useAuth();
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,9 +42,9 @@ const BlogList = () => {
     setEditedContent(blogToEdit.content);
   };
 
-  // Update Blog
+  //Update Blog
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = async (editingBlogId) => {
     try {
       await axios.put(
         `http://localhost:4001/api/v1/blogs/${editingBlogId}`,
@@ -60,7 +60,7 @@ const BlogList = () => {
         }
       );
 
-      // Get Updated Blog
+      //Get Updated Blog
 
       const updatedBlogs = await axios.get(
         "http://localhost:4001/api/v1/blogs",
@@ -74,13 +74,13 @@ const BlogList = () => {
       );
 
       setBlogs(updatedBlogs.data);
-      setEditingBlogId(null);
+      setEditingBlogId(true);
     } catch (error) {
       console.error("Error editing the blog:", error);
     }
   };
 
-  // Delete Blog
+  //Delete Blog
 
   const handleDelete = async (blogId) => {
     try {
@@ -121,17 +121,19 @@ const BlogList = () => {
                 type="text"
                 value={editedTitle}
                 onChange={(e) => setEditedTitle(e.target.value)}
-                className="w-full mb-2 p-2 border rounded focus:border-blue-500"
+                className="w-full mb-2 p-2 border rounded focus:outline-none focus:border-blue-500"
               />
-              <InputField
+              <textarea
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
                 rows="4"
-                className="w-full p-2 border rounded focus:border-blue-500"
+                className="w-full p-2 border rounded focus:outline-none focus:border-blue-500"
               />
               <Button
-                onClick={handleSaveEdit}
-                className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 mr-2"
+                onClick={() => {
+                  handleSaveEdit(blog.id);
+                }}
+                className="bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none hover:bg-blue-700 mr-2"
               >
                 Save
               </Button>
@@ -153,7 +155,7 @@ const BlogList = () => {
               {blog.content.length > 100 && (
                 <Button
                   onClick={() => setShowFullContent(!showFullContent)}
-                  className="text-blue-500 hover:underline"
+                  className="text-blue-500 hover:underline focus:outline-none"
                 >
                   {showFullContent ? "See Less" : "See More"}
                 </Button>

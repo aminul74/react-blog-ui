@@ -1,9 +1,10 @@
-function InputField({ id, type, value, onChange, placeholder }) {
+// eslint-disable-next-line react/prop-types
+function InputField({ id, className, type, value, onChange, placeholder }) {
   return (
     <div className="Input">
       <input
         id={id}
-        className="w-full px-3 py-2 border rounded"
+        className={`w-full px-3 py-2 border rounded ${className}`}
         type={type}
         value={value}
         placeholder={placeholder}

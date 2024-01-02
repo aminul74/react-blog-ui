@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../../Hooks/AuthContext";
-import Profile from "../Profile/Profile";
-import Navbar from "../Navbar/Navbar";
+import { useAuth } from "../Hooks/AuthContext";
+import Profile from "./Profile";
+import Navbar from "./Navbar";
 
 const Header = () => {
   Header.propTypes = {

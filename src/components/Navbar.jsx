@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import InputField from "../Input-Field/InputField";
+import InputField from "./InputField";
+// eslint-disable-next-line react/prop-types
 const NavigationLinks = ({ isLoggedIn }) => {
   return (
     <div className="flex items-center space-x-10">

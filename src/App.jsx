@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
-import Blogs from "./components/Blogs/BlogList";
-import AuthForm from "./components/UserForm/UserForm";
-import BlogForm from "./components/BlogForm/BlogForm";
-import Profile from "./components/Profile/Profile";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Blogs from "./components/BlogList";
+import AuthForm from "./components/UserForm";
+import BlogForm from "./components/BlogForm";
+import Profile from "./components/Profile";
+import BlogItem from "./components/BlogCard";
+import ProfileItem from "./components/ProfileItem";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/create-blog" element={<BlogForm />} />
         <Route path="/login" element={<AuthForm />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/blog" element={<BlogItem />} />
+        <Route path="/userProfile" element={<ProfileItem />} />
       </Routes>
       <Footer />
     </Router>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../Hooks/AuthContext";
-import InputField from "../Input-Field/InputField";
-import Button from "../Button/Button";
+import { useAuth } from "../Hooks/AuthContext";
+import InputField from "./InputField";
+import Button from "./Button";
 
 const AuthForm = () => {
   const { login, getUser } = useAuth();
