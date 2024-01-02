@@ -1,12 +1,12 @@
+import { useAuth } from "../Hooks/AuthContext";
 import Button from "./Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
-const ProfilePage = ({ logout }) => {
+const ProfileButton = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { userId } = useParams();
 
-  const handleProfile = () => {
-    navigate("/userProfile");
-  };
   return (
     <div className="origin-top-left absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white">
       <div
@@ -18,7 +18,7 @@ const ProfilePage = ({ logout }) => {
         <Button
           className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem"
-          onClick={handleProfile}
+          onClick={() => navigate(`/user/${userId}`)}
         >
           Account Setting
         </Button>
@@ -36,4 +36,4 @@ const ProfilePage = ({ logout }) => {
   );
 };
 
-export default ProfilePage;
+export default ProfileButton;

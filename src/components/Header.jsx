@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../Hooks/AuthContext";
-import Profile from "./Profile";
+import Profile from "./ProfileButton";
 import Navbar from "./Navbar";
 
 const Header = () => {
@@ -10,7 +10,7 @@ const Header = () => {
     isToken: PropTypes.bool.isRequired,
   };
 
-  const { token, logout, user } = useAuth();
+  const { token, user } = useAuth();
   const [isDropDown, setDropDown] = useState(false);
 
   const handleDropDown = () => {
@@ -54,7 +54,7 @@ const Header = () => {
               <span className="mr-2 ml-2">{user.username}</span>
             </button>
 
-            {isDropDown ? <Profile logout={logout} /> : null}
+            {isDropDown ? <Profile /> : null}
           </div>
         )}
       </div>
