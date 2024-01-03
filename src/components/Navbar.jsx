@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import InputField from "./InputField";
-import ProfilePage from "./ProfileButton";
+// import ProfilePage from "./ProfileButton";
 import Button from "./Button";
 // eslint-disable-next-line react/prop-types
 const NavigationLinks = ({ isLoggedIn }) => {

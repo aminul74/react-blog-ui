@@ -3,17 +3,16 @@ import Button from "./Button";
 import InputField from "./InputField";
 import { useAuth } from "../Hooks/AuthContext";
 import userProfileImage from "../assets/userProfile.png";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ProfileItem = () => {
-  const { user, token } = useAuth();
-  const { userId } = useParams();
-
+  const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [passwordChangeError, setPasswordChangeError] = useState(null);
+  const { user, token, logout } = useAuth();
 
   const handlePasswordChange = async () => {
     try {
@@ -22,8 +21,8 @@ const ProfileItem = () => {
         return;
       }
 
-      const response = await axios.put(
-        `http://localhost:4001/api/v1/users/${userId}/password`, // Update the endpoint URL
+      await axios.put(
+        `http://localhost:4001/api/v1/users/${user.id}`,
         {
           old_password: oldPassword,
           new_password: newPassword,
@@ -37,44 +36,29 @@ const ProfileItem = () => {
         }
       );
 
-      console.log("Response data:", response.data);
-
-      // Assuming your API returns a success property
-      if (response.data.success) {
-        // Handle success (e.g., redirect user or show success message)
-        console.log("Password updated successfully");
-      } else {
-        // Handle unsuccessful response (customize based on your API)
-        console.log("Password update failed. Check response:", response.data);
-        setPasswordChangeError(
-          "Failed to update password. Please check your old password."
-        );
-      }
-
-      // Clear password fields after attempt (whether successful or not)
       setOldPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
+      logout();
+      navigate("/");
     } catch (error) {
       console.error("Error updating password:", error);
+    }
+  };
 
-      if (error.response) {
-        // Handle known errors with response from the server
-        console.log("Response data:", error.response.data);
-        console.log("Response status:", error.response.status);
-        console.log("Response headers:", error.response.headers);
-      } else if (error.request) {
-        // Handle cases where no response was received
-        console.log("No response received. Request:", error.request);
-      } else {
-        // Handle errors setting up the request
-        console.log("Error setting up the request:", error.message);
-      }
+  const handleDleleteAccount = async () => {
+    try {
+      await axios.delete(`http://localhost:4001/api/v1/users/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      // Set an appropriate error message
-      setPasswordChangeError(
-        "Failed to update password. Please check your old password."
-      );
+      logout();
+      navigate("/login");
+      console.log("Dlete Success");
+    } catch (error) {
+      console.error("Error delete profile:", error);
     }
   };
 
@@ -139,6 +123,13 @@ const ProfileItem = () => {
             </div>
           </div>
         )}
+
+        <Button
+          className="bg-red-400 text-white font-bold py-2 px-4 rounded hover:bg-red-600 mt-5"
+          onClick={handleDleleteAccount}
+        >
+          Delete Account
+        </Button>
       </div>
     </div>
   );

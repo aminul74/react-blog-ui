@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../Hooks/AuthContext";
-import Profile from "./ProfileButton";
+import ProfileButton from "./ProfileButton";
 import Navbar from "./Navbar";
 
 const Header = () => {
@@ -16,6 +16,24 @@ const Header = () => {
   const handleDropDown = () => {
     setDropDown(!isDropDown);
   };
+
+  const handleOutsideClick = (event) => {
+    if (
+      isDropDown &&
+      !event.target.closest(".profile-button") &&
+      !event.target.closest(".profile-dropdown")
+    ) {
+      setDropDown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isDropDown]);
 
   return (
     <nav className="bg-customColor p-4 sticky top-0 z-50">
@@ -43,7 +61,7 @@ const Header = () => {
           <div className="relative inline-block text-left">
             <button
               type="button"
-              className="flex items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
+              className="flex items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2 profile-button"
               onClick={handleDropDown}
             >
               <img
@@ -54,7 +72,11 @@ const Header = () => {
               <span className="mr-2 ml-2">{user.username}</span>
             </button>
 
-            {isDropDown ? <Profile /> : null}
+            {isDropDown && (
+              <div className="profile-dropdown">
+                <ProfileButton />
+              </div>
+            )}
           </div>
         )}
       </div>

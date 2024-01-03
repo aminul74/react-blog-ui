@@ -12,17 +12,11 @@ const BlogList = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [showFullContent, setShowFullContent] = useState(false);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/api/v1/blogs", {
-          params: {
-            title: "",
-            content: "",
-            authorId: "",
-          },
-        });
+        const response = await axios.get("http://localhost:4001/api/v1/blogs");
 
         setLoading(false);
         setBlogs(response.data);
@@ -62,15 +56,7 @@ const BlogList = () => {
 
       //Get Updated Blog
 
-      const updatedBlogs = await axios.get(
-        "http://localhost:4001/api/v1/blogs",
-        {
-          params: {
-            title: "",
-            content: "",
-            authorId: "",
-          },
-        }
+      const updatedBlogs = await axios.get("http://localhost:4001/api/v1/blogs"
       );
 
       setBlogs(updatedBlogs.data);

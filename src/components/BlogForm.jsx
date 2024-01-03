@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Hooks/AuthContext";
+import Notification from "./Notification";
 
 const BlogForm = () => {
   const { token } = useAuth();
@@ -9,7 +10,8 @@ const BlogForm = () => {
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-
+  const [message, setMessage] = useState("");
+  console.log("XXXXX", message)
   const handleCreateBlog = async (event) => {
     event.preventDefault();
 
@@ -38,6 +40,7 @@ const BlogForm = () => {
       setTitle("");
       setContent("");
       setErrorMessage("");
+      setMessage("Blog created successfully");
       navigate("/");
     } catch (error) {
       console.error("Error:", error);
@@ -45,12 +48,17 @@ const BlogForm = () => {
     }
   };
 
+  // const handleClose = () => {
+  //   setIsVisiable(false);
+  // };
+
   return (
     <div className="h-screen">
       <div className="max-w-xl mx-auto my-8 p-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Create a new blog</h2>
         <form onSubmit={handleCreateBlog}>
           {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
+          <Notification message={message} />
           <div className="mb-4">
             <label
               htmlFor="title"

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Hooks/AuthContext";
 import InputField from "./InputField";
 import Button from "./Button";
+// import Notification from "./Notification";
 
 const AuthForm = () => {
   const { login, getUser } = useAuth();
@@ -79,8 +80,8 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-5">
-      <div className="bg-white p-8 rounded shadow-md w-96">
+    <div className="flex items-center justify-center min-h-screen mt-5">
+      <div className="bg-white p-8 rounded shadow-md w-96 h-screen">
         <h2 className="text-2xl font-semibold mb-6">
           {isregister ? "Signup" : "Login"}
         </h2>
