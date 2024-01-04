@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Hooks/AuthContext";
 import Notification from "./Notification";
+import { useBlogContext } from "../Hooks/BlogContext";
 
 const BlogForm = () => {
   const { token } = useAuth();
@@ -10,6 +11,7 @@ const BlogForm = () => {
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const { blogList, setBlogList } = useBlogContext();
   // console.log("XX", successMessage);
   const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ const BlogForm = () => {
     event.preventDefault();
 
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:4001/api/v1/blogs/create",
         {
           title,
@@ -31,8 +33,10 @@ const BlogForm = () => {
           },
         }
       );
-      console.log("GGGG", successMessage);
-      // console.log("Blog created successfully:", response.data);
+
+      setBlogList((prevBlogList) => [...prevBlogList, ...response.data]);
+      // setBlogList(response.data);
+      console.log("Success", successMessage);
       setSuccessMessage("Blog created successfully!");
       setTitle("");
       setContent("");

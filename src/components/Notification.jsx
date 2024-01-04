@@ -8,7 +8,7 @@ const Notification = ({ message, onClose }) => {
   };
 
   console.log("MESSAGE :", message);
-  const [visible, e] = useState(true);
+  const [visible] = useState(true);
 
   const handleClose = () => {
     // setVisible(false);

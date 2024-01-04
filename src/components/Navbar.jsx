@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import InputField from "./InputField";
-// import ProfilePage from "./ProfileButton";
-import Button from "./Button";
-// eslint-disable-next-line react/prop-types
-const NavigationLinks = ({ isLoggedIn }) => {
+
+const NavigationLinks = () => {
   return (
     <div className="flex items-center space-x-10">
       <Link
@@ -12,14 +10,14 @@ const NavigationLinks = ({ isLoggedIn }) => {
       >
         Home
       </Link>
-      {isLoggedIn ? (
+      {/*{ isLoggedIn }* {isLoggedIn ? false (
         <Link
           to="/create-blog"
           className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
         >
           Create Blog
         </Link>
-      ) : null}
+      ) : null} */}
 
       <div className="Search flex">
         <InputField
@@ -35,12 +33,6 @@ const NavigationLinks = ({ isLoggedIn }) => {
           Search
         </a>
       </div>
-      <Button></Button>
-      {/* {isLoggedIn && (
-        <div>
-          <ProfilePage />
-        </div>
-      )} */}
     </div>
   );
 };
