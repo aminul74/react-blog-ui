@@ -9,19 +9,15 @@ const BlogForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  // console.log("XX", successMessage);
   const navigate = useNavigate();
-  const [message, setMessage] = useState("");
-  console.log("XXXXX", message)
+
   const handleCreateBlog = async (event) => {
     event.preventDefault();
 
-    if (!token) {
-      setErrorMessage("You must be logged in to create a blog.");
-      return;
-    }
-
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:4001/api/v1/blogs/create",
         {
           title,
@@ -35,12 +31,13 @@ const BlogForm = () => {
           },
         }
       );
-
-      console.log("Blog created successfully:", response.data);
+      console.log("GGGG", successMessage);
+      // console.log("Blog created successfully:", response.data);
+      setSuccessMessage("Blog created successfully!");
       setTitle("");
       setContent("");
       setErrorMessage("");
-      setMessage("Blog created successfully");
+      setTimeout(clearSuccessMessage, 3000);
       navigate("/");
     } catch (error) {
       console.error("Error:", error);
@@ -48,17 +45,26 @@ const BlogForm = () => {
     }
   };
 
-  // const handleClose = () => {
-  //   setIsVisiable(false);
-  // };
+  const clearSuccessMessage = () => {
+    setSuccessMessage("");
+  };
 
   return (
-    <div className="h-screen">
+    <div className="form">
       <div className="max-w-xl mx-auto my-8 p-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Create a new blog</h2>
         <form onSubmit={handleCreateBlog}>
           {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-          <Notification message={message} />
+          {successMessage && (
+            <>
+              <h2>Hello World</h2>
+              <Notification
+                message={successMessage}
+                onClose={clearSuccessMessage}
+              />
+            </>
+          )}
+
           <div className="mb-4">
             <label
               htmlFor="title"

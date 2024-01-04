@@ -7,7 +7,7 @@ import BlogForm from "./components/BlogForm";
 import Profile from "./components/ProfileButton";
 import BlogItem from "./components/BlogCard";
 import ProfileItem from "./components/ProfileItem";
-import Notification from "./components/Notification";
+// import Notification from "./components/Notification";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/blog" element={<BlogItem />} />
         <Route path="/user/:userId" element={<ProfileItem />} />
-        <Route path="/info" element={<Notification />} />
+        {/* <Route path="/info" element={<Notification />} /> */}
       </Routes>
       <Footer />
     </Router>
