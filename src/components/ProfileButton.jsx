@@ -2,7 +2,7 @@ import { useAuth } from "../Hooks/AuthContext";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
-const ProfileButton = () => {
+const ProfileButton = ({ setDropDown }) => {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
 
@@ -12,7 +12,10 @@ const ProfileButton = () => {
         <Button
           className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem"
-          onClick={() => navigate(`/user/${user.id}`)}
+          onClick={() => {
+            setDropDown(false);
+            navigate(`/user/${user.id}`);
+          }}
         >
           Account Setting
         </Button>
@@ -20,6 +23,7 @@ const ProfileButton = () => {
           className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
           role="menuitem"
           onClick={() => {
+            setDropDown(false);
             navigate("/");
             logout();
           }}

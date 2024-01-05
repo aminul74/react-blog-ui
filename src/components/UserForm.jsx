@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Hooks/AuthContext";
 import InputField from "./InputField";
 import Button from "./Button";
-// import Notification from "./Notification";
 
 const AuthForm = () => {
   const { login, getUser } = useAuth();

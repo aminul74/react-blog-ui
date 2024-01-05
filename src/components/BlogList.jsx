@@ -10,7 +10,6 @@ import Pagination from "./Pagination";
 
 const BlogList = () => {
   const { token } = useAuth();
-  // const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
@@ -21,11 +20,9 @@ const BlogList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4001/api/v1/blogs?${page}&${size}`
-        );
+        const response = await axios.get("http://localhost:4001/api/v1/blogs");
 
-        // console.log(response.data);
+        // console.log("yuyuyuyuyuyuyuyuyuyu", response.data);
         setLoading(false);
         setBlogList(response.data);
         // setBlogs(response.data);
@@ -52,7 +49,7 @@ const BlogList = () => {
 
   return (
     <div>
-      {token ? (
+      {token && (
         <Button
           className="fixed z-10 left-0 top-24 inline-flex items-center justify-center rounded-md bg-customColor py-4 px-6 font-dm text-lg font-large text-white  transition-transform duration-200 ease-in-out hover:scale-[1.02]"
           type="button"
@@ -60,7 +57,7 @@ const BlogList = () => {
         >
           Create Blog
         </Button>
-      ) : null}
+      )}
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"
@@ -118,7 +115,6 @@ const BlogList = () => {
           <BlogCard
             blog={blog}
             setBlogList={setBlogList}
-            // setBlogs={setBlogList}
             key={blog.id}
             loading={loading}
           />

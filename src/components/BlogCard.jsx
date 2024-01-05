@@ -5,24 +5,16 @@ import InputField from "./InputField";
 import Button from "./Button";
 import { useAuth } from "../Hooks/AuthContext";
 import { useNavigate } from "react-router";
-// import { useBlogContext } from "../Hooks/BlogContext";
-// import { useHistory } from "react-router-dom";
-// import PropTypes from "prop-types";
 
 function BlogCard({ blog, setBlogList }) {
-  // const [loading, setLoading] = useState(true);
   const { token, user } = useAuth();
   const navigate = useNavigate();
   const [editingBlogId, setEditingBlogId] = useState(null);
   const [showFullContent, setShowFullContent] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
-  // const { blogList, setBlogList } = useBlogContext();
-  // const history = useHistory();
 
   const handleEdit = () => {
-    // const blogToEdit = blogs.find((blog) => blog.id === blogId);
-
     setEditingBlogId(blog.id);
     setEditedTitle(blog.title);
     setEditedContent(blog.content);
@@ -77,10 +69,6 @@ function BlogCard({ blog, setBlogList }) {
     }
   };
 
-  // if (loading) {
-  //   return <h2 className="text-center mt-5 text-white">Loading...</h2>;
-  // }
-
   const truncateContent = (content) => {
     const maxLength = 100;
     return content.length > maxLength
@@ -131,7 +119,7 @@ function BlogCard({ blog, setBlogList }) {
             <div>
               <h2 className="text-2xl font-bold mb-2">{blog.title}</h2>
               <p className="text-lg text-gray-600 mb-2">
-                Author: {user?.username}
+                Author: {blog?.User?.username}
               </p>
               {showFullContent ? (
                 <p className="text-lg text-gray-800">{blog.content}</p>

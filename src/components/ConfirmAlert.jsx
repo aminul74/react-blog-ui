@@ -8,7 +8,7 @@ function ConfirmAlert({ onCancel, onConfirm }) {
           <Button className="mr-2" onClick={onCancel}>
             Cancel
           </Button>
-          <Button onClick={onConfirm}>Logout</Button>
+          <Button onClick={onConfirm}>Logout</Button> 
         </div>
       </div>
     </div>

@@ -74,7 +74,7 @@ const Header = () => {
 
             {isDropDown && (
               <div className="profile-dropdown">
-                <ProfileButton />
+                <ProfileButton setDropDown={setDropDown} />
               </div>
             )}
           </div>

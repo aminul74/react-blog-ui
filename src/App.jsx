@@ -4,10 +4,10 @@ import Footer from "./components/Footer";
 import Blogs from "./components/BlogList";
 import AuthForm from "./components/UserForm";
 import BlogForm from "./components/BlogForm";
-import Profile from "./components/ProfileButton";
+// import Profile from "./components/ProfileButton";
 import BlogItem from "./components/BlogCard";
 import ProfileItem from "./components/ProfileItem";
-import Pagination from "./components/Pagination";
+// import Pagination from "./components/Pagination";
 // import Notification from "./components/Notification";
 
 function App() {
@@ -18,10 +18,10 @@ function App() {
         <Route path="/" element={<Blogs />} />
         <Route path="/create-blog" element={<BlogForm />} />
         <Route path="/login" element={<AuthForm />} />
-        <Route path="/profile" element={<Profile />} />
+        {/* <Route path="/profile" element={<Profile />} /> */}
         <Route path="/blog" element={<BlogItem />} />
         <Route path="/user/:userId" element={<ProfileItem />} />
-        <Route path="/info" element={<Pagination />} />
+        {/* <Route path="/info" element={<Pagination />} /> */}
       </Routes>
       <Footer />
     </Router>

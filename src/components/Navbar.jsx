@@ -10,14 +10,6 @@ const NavigationLinks = () => {
       >
         Home
       </Link>
-      {/*{ isLoggedIn }* {isLoggedIn ? false (
-        <Link
-          to="/create-blog"
-          className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
-        >
-          Create Blog
-        </Link>
-      ) : null} */}
 
       <div className="Search flex">
         <InputField

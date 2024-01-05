@@ -6,13 +6,12 @@ import Notification from "./Notification";
 import { useBlogContext } from "../Hooks/BlogContext";
 
 const BlogForm = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { blogList, setBlogList } = useBlogContext();
-  // console.log("XX", successMessage);
   const navigate = useNavigate();
 
   const handleCreateBlog = async (event) => {
