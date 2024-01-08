@@ -4,8 +4,12 @@ const BlogContext = createContext();
 export const BlogProvider = ({ children }) => {
   const [blogList, setBlogList] = useState([]);
 
+  const updateBlogList = (newBlogList) => {
+    setBlogList(newBlogList);
+  };
+
   return (
-    <BlogContext.Provider value={{blogList, setBlogList}}>
+    <BlogContext.Provider value={{ blogList, setBlogList, updateBlogList }}>
       {children}
     </BlogContext.Provider>
   );

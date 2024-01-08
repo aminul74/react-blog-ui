@@ -1,11 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Hooks/AuthContext";
-import InputField from "./InputField";
-import Button from "./Button";
+import { useAuth } from "../ContextApi/AuthContext";
+import InputField from "../components/InputField";
+import Button from "../components/Button";
 
-const AuthForm = () => {
+const UserForm = () => {
   const { login, getUser } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -180,4 +180,4 @@ const AuthForm = () => {
   );
 };
 
-export default AuthForm;
+export default UserForm;

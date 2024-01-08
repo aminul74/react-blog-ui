@@ -19,7 +19,7 @@ const Pagination = ({ incrementPage, decrementPage }) => {
         <div className="inline-flex mt-2 xs:mt-0">
           {/* Buttons */}
           <button
-            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white hover:scale-105 duration-200"
             onClick={decrementPage}
           >
             <svg
@@ -39,7 +39,7 @@ const Pagination = ({ incrementPage, decrementPage }) => {
             Prev
           </button>
           <button
-            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e  dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white hover:scale-105 duration-200"
             onClick={incrementPage}
           >
             Next

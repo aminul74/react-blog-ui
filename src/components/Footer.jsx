@@ -7,7 +7,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="bg-customColor text-white p-4 flex justify-between items-center bottom-0 z-50 w-full sticky mt-10">
+    <div className="bg-customColor text-white p-4 flex justify-between items-center h-20 relative">
       <p>&copy; 2023 All rights reserved.</p>
       <div className="flex space-x-4">
         <a href="#" className="hover:text-blue-500">

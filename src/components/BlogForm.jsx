@@ -1,16 +1,16 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Hooks/AuthContext";
+import { useAuth } from "../ContextApi/AuthContext";
 import Notification from "./Notification";
-import { useBlogContext } from "../Hooks/BlogContext";
+import { useBlogContext } from "../ContextApi/BlogContext";
 
-const BlogForm = () => {
+const BlogForm = ({ onCreateBlog }) => {
   const { token, user } = useAuth();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  // const [successMessage, setSuccessMessage] = useState("");
   const { blogList, setBlogList } = useBlogContext();
   const navigate = useNavigate();
 
@@ -35,22 +35,20 @@ const BlogForm = () => {
 
       setBlogList((prevBlogList) => [...prevBlogList, ...response.data]);
       // setBlogList(response.data);
-      console.log("Success", successMessage);
-      setSuccessMessage("Blog created successfully!");
+      // console.log("Success", successMessage);
+      onCreateBlog("Blog created successfully!");
       setTitle("");
       setContent("");
       setErrorMessage("");
-      setTimeout(clearSuccessMessage, 3000);
-      navigate("/");
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage("Error creating the blog. Please try again.");
     }
   };
 
-  const clearSuccessMessage = () => {
-    setSuccessMessage("");
-  };
+  // const clearSuccessMessage = () => {
+  //   setSuccessMessage("");
+  // };
 
   return (
     <div className="form">
@@ -58,15 +56,6 @@ const BlogForm = () => {
         <h2 className="text-2xl font-semibold mb-4">Create a new blog</h2>
         <form onSubmit={handleCreateBlog}>
           {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-          {successMessage && (
-            <>
-              <h2>Hello World</h2>
-              <Notification
-                message={successMessage}
-                onClose={clearSuccessMessage}
-              />
-            </>
-          )}
 
           <div className="mb-4">
             <label

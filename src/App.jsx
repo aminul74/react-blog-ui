@@ -1,29 +1,40 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Blogs from "./components/BlogList";
-import AuthForm from "./components/UserForm";
-import BlogForm from "./components/BlogForm";
-// import Profile from "./components/ProfileButton";
-import BlogItem from "./components/BlogCard";
-import ProfileItem from "./components/ProfileItem";
-// import Pagination from "./components/Pagination";
-// import Notification from "./components/Notification";
+import Blogs from "./pages/BlogsPage";
+import UserForm from "./pages/UserForm";
+import ProfilePage from "./pages/ProfilePage";
+import BlogDetails from "./components/BlogDetails";
+import NotFound from "./components/NotFound";
+import About from "./pages/About";
+
+const MemoizedHeader = React.memo(Header);
+const MemoizedFooter = React.memo(Footer);
 
 function App() {
   return (
     <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Blogs />} />
-        <Route path="/create-blog" element={<BlogForm />} />
-        <Route path="/login" element={<AuthForm />} />
-        {/* <Route path="/profile" element={<Profile />} /> */}
-        <Route path="/blog" element={<BlogItem />} />
-        <Route path="/user/:userId" element={<ProfileItem />} />
-        {/* <Route path="/info" element={<Pagination />} /> */}
-      </Routes>
-      <Footer />
+      <MemoizedHeader />
+      <div style={{ minHeight: "100vh", position: "relative" }}>
+        <Routes>
+          <Route path="/not" element={<NotFound />} />
+          <Route path="/" element={<Blogs />} />
+          <Route path="/login" element={<UserForm />} />
+          <Route path="/user/:userId" element={<ProfilePage />} />
+          <Route path="/blog/:uuId" element={<BlogDetails />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/404" element={<Navigate replace to="/" />} />
+        </Routes>
+      </div>
+      <div style={{ position: "sticky", bottom: 0, marginTop: 10 }}>
+        <MemoizedFooter />
+      </div>
     </Router>
   );
 }

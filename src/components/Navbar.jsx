@@ -6,24 +6,18 @@ const NavigationLinks = () => {
     <div className="flex items-center space-x-10">
       <Link
         to="/"
-        className="items-center bg-gray-800 text-white rounded-full active:bg-gray-600 px-4 py-2"
+        className="items-center bg-slate-800 text-white text-xl rounded active:bg-gray-600 hover:bg-slate-700 hover:scale-105 duration-200 px-4 py-2"
       >
         Home
       </Link>
 
-      <div className="Search flex">
-        <InputField
-          id="search"
-          type="text"
-          className="bg-gray-800 text-white rounded-l-full py-2 px-4 focus:outline-none"
-          placeholder="Search..."
-        />
-        <a
-          href="#"
-          className="bg-gray-800 text-white rounded-r-full px-4 py-2 hover:bg-gray-600"
+      <div className="flex items-center space-x-10">
+        <Link
+          to="/about"
+          className="items-center bg-slate-800 text-white text-xl rounded active:bg-gray-600 hover:bg-slate-700 hover:scale-105 duration-200 px-4 py-2"
         >
-          Search
-        </a>
+          About
+        </Link>
       </div>
     </div>
   );

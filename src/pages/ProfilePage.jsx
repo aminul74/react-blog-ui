@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Button from "./Button";
-import InputField from "./InputField";
-import { useAuth } from "../Hooks/AuthContext";
+import Button from "../components/Button";
+import InputField from "../components/InputField";
+import { useAuth } from "../ContextApi/AuthContext";
 import userProfileImage from "../assets/userProfile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ProfileItem = () => {
+const ProfilePage = () => {
   const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -63,8 +63,8 @@ const ProfileItem = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-5 ">
-      <div className="bg-white items-center p-5 border rounded text-center text-gray-500 max-w-sm w-96 h-screen">
+    <div className="flex items-center justify-center mt-5 p-2">
+      <div className="max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white items-center p-20 border rounded text-center text-gray-500">
         <img
           className="w-32 h-32 rounded-full mx-auto"
           src={userProfileImage}
@@ -83,7 +83,7 @@ const ProfileItem = () => {
         <p className="mt-2 text-lg text-gray-900 ">Welcome to your Profile!</p>
 
         {token && (
-          <div className="max-w-md mx-auto mt-8 p-6 bg-salate-200 rounded-md shadow-md">
+          <div className="max-w-lg mx-auto mt-8 p-12 bg-salate-200 rounded-md shadow-md">
             <div className="mb-4">
               <h3 className="text-xl font-semibold text-black mb-2">
                 Change Password
@@ -135,4 +135,4 @@ const ProfileItem = () => {
   );
 };
 
-export default ProfileItem;
+export default ProfilePage;

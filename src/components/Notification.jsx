@@ -1,39 +1,29 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect } from "react";
 
-const Notification = ({ message, onClose }) => {
-  Notification.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    message: PropTypes.string,
-  };
-
-  console.log("MESSAGE :", message);
-  const [visible] = useState(true);
-
-  const handleClose = () => {
-    onClose();
-  };
-
+const Notification = ({ notification, className, isNotify, setNotify }) => {
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleClose();
-    }, 3000);
+    if (isNotify===true) {
+      const timeoutId = setTimeout(() => {
+        setNotify(false);
+      }, 3000);
 
-    return () => clearTimeout(timeoutId);
-  }, [onClose]);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isNotify, setNotify]);
 
   return (
-    <div
-      className={`${
-        visible ? "block" : "hidden"
-      } fixed bottom-4 right-4 w-64 p-4 bg-green-500 text-white rounded-md shadow-lg`}
-    >
-      <p className="text-lg font-semibold mb-2" onClick={handleClose}>
-        {message}
-      </p>
-    </div>
+    <>
+      {isNotify ? (
+        <div className="fixed top-20 right-0 m-4 max-w-xs p-4 rounded-lg shadow dark:text-gray-400 dark:bg-green-800">
+          <div className={className} role="alert">
+            <div className="ms-3 text-sm font-normal">{notification}</div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 };
 
 export default Notification;
+
 
