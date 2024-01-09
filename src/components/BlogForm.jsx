@@ -1,62 +1,37 @@
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAuth } from "../ContextApi/AuthContext";
-import Notification from "./Notification";
-import { useBlogContext } from "../ContextApi/BlogContext";
 
-const BlogForm = ({ onCreateBlog }) => {
-  const { token, user } = useAuth();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  // const [successMessage, setSuccessMessage] = useState("");
-  const { blogList, setBlogList } = useBlogContext();
-  const navigate = useNavigate();
+const BlogForm = ({ onSubmit, title, content }) => {
+  const { token } = useAuth();
+  const [localTitle, setLocalTitle] = useState('');
+  const [localContent, setLocalContent] = useState('');
 
-  const handleCreateBlog = async (event) => {
+  const submitForm = (event) => {
     event.preventDefault();
+    const blog = {
+      title: localTitle,
+      content: localContent,
+    };
+    onSubmit(blog);
+  };
+  useEffect(() => {
+    setLocalTitle(title);
+    setLocalContent(content);
+  }, [title, content]);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:4001/api/v1/blogs/create",
-        {
-          title,
-          content,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setBlogList((prevBlogList) => [...prevBlogList, ...response.data]);
-      // setBlogList(response.data);
-      // console.log("Success", successMessage);
-      onCreateBlog("Blog created successfully!");
-      setTitle("");
-      setContent("");
-      setErrorMessage("");
-    } catch (error) {
-      console.error("Error:", error);
-      setErrorMessage("Error creating the blog. Please try again.");
-    }
+  const handleTitleChange = (event) => {
+    setLocalTitle(event.target.value);
   };
 
-  // const clearSuccessMessage = () => {
-  //   setSuccessMessage("");
-  // };
+  const handleContentChange = (event) => {
+    setLocalContent(event.target.value);
+  };
 
   return (
     <div className="form">
       <div className="max-w-xl mx-auto my-8 p-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-semibold mb-4">Create a new blog</h2>
-        <form onSubmit={handleCreateBlog}>
-          {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-
+        <form onSubmit={submitForm}>
           <div className="mb-4">
             <label
               htmlFor="title"
@@ -64,11 +39,12 @@ const BlogForm = ({ onCreateBlog }) => {
             >
               Title:
             </label>
+
             <input
               type="text"
               id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={localTitle}
+              onChange={handleTitleChange}
               className="w-full mt-1 p-2 border rounded focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -81,8 +57,8 @@ const BlogForm = ({ onCreateBlog }) => {
             </label>
             <textarea
               id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+              value={localContent}
+              onChange={handleContentChange}
               rows="4"
               className="w-full mt-1 p-2 border rounded focus:outline-none focus:border-blue-500"
             />

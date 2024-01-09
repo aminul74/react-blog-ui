@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef, Fragment, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../ContextApi/AuthContext";
 import Button from "../components/Button";
-import { Dialog, Transition } from "@headlessui/react";
 import BlogForm from "../components/BlogForm";
 import BlogCard from "../components/BlogCard";
 import { useBlogContext } from "../ContextApi/BlogContext";
@@ -15,15 +14,23 @@ const BlogsPage = () => {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [isNotify, setNotify] = useState(false);
-  const [notification, setNotification] = useState("");
-  const cancelButtonRef = useRef(null);
+  const [message, setMessage] = useState("");
+  const [messageVisibility, setMessageVisibility] = useState(false);
+  // const cancelButtonRef = useRef(null);
   const { blogList, setBlogList } = useBlogContext();
-  const onCreateBlog = useCallback((message) => {
+  //const [title, setTitle] = useState("");
+  //const [content, setContent] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const messageSetAs = useCallback((message) => {
     setOpenModal(false);
-    setNotification(message);
-    setNotify(true);
+    setMessage(message);
+    setMessageVisibility(true);
   });
+
+  const onMessageHide = () => {
+    setMessageVisibility(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,12 +47,29 @@ const BlogsPage = () => {
     fetchData();
   }, []);
 
-  const incrementPage = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
+  const handleCreateBlog = async (blog) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4001/api/v1/blogs/create",
+        blog,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const decrementPage = () => {
-    setPage((prevPage) => Math.max(prevPage - 1, 0));
+      setBlogList((prevBlogList) => [...prevBlogList, ...response.data]);
+      messageSetAs("Blog created successfully!");
+      //setTitle("");
+      //setContent("");
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Error creating the blog. Please try again.");
+    }
   };
 
   if (loading) {
@@ -54,11 +78,15 @@ const BlogsPage = () => {
 
   return (
     <div className="relative">
-      <Notification
-        notification={notification}
-        isNotify={isNotify}
-        setNotify={setNotify}
-      />
+      {messageVisibility && (
+        <div>
+          <Notification
+            message={message}
+            onClose={onMessageHide}
+            isVisible={messageVisibility}
+          />
+        </div>
+      )}
 
       {token && (
         <div className="border-1F2937">
@@ -97,61 +125,15 @@ const BlogsPage = () => {
 
       <div>
         <Modal onClose={() => setOpenModal(false)} open={openModal}>
-          <BlogForm onCreateBlog={onCreateBlog} />
+          <BlogForm
+            onSubmit={handleCreateBlog}
+            title=""
+            // setTitle={setTitle}
+            content=""
+            // setContent={setContent}
+          />
         </Modal>
       </div>
-      {/* <Transition.Root show={openModal} as={Fragment}>
-        <Dialog
-          as="div"
-          className="relative z-10"
-          initialFocus={cancelButtonRef}
-          onClose={setOpenModal}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto ">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <BlogForm onCreateBlog={onCreateBlog} />
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                      onClick={() => setOpenModal(false)}
-                      ref={cancelButtonRef}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root> */}
-      {/* end */}
-
       <div>
         <HeroSection />
       </div>

@@ -41,7 +41,7 @@ function BlogCard({ blog, setBlogList }) {
             <p>{formattedDate}</p>
           </div>
         </div>
-        <p className="mb-6 text-2xl font-normal font-bold">{blog.title}</p>
+        <p className="mb-6 text-2xl font-normal">{blog.title}</p>
         <LimitContent content={blog.content} />
         <div className="flex justify-end items-center">
           <Link

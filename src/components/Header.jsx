@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../ContextApi/AuthContext";
 import DropDownButton from "./DropDownButton";
 import Navbar from "./Navbar";
 
 const Header = () => {
-  const { token, user } = useAuth();
+  const { token, user, logout } = useAuth();
   const [isDropDown, setDropDown] = useState(false);
-
+  const navigate = useNavigate();
   const handleDropDown = () => {
     setDropDown(!isDropDown);
+  };
+
+  const handleButtonClick = (label) => {
+    if (label === "Account") {
+      navigate(`/user/${user.id}`);
+    } else if (label === "Log Out") {
+      logout();
+    }
   };
 
   const handleOutsideClick = (event) => {
@@ -70,13 +78,13 @@ const Header = () => {
             {isDropDown && (
               <div className="profile-dropdown ">
                 <DropDownButton
-                  setDropDown={setDropDown}
-                  className={
-                    "absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white text-black hover:scale-105 duration-200 "
-                  }
+                  labels={["Account", "Log Out"]}
+                  handleButtonClick={handleButtonClick}
                 />
               </div>
             )}
+
+            <div></div>
           </div>
         )}
       </div>

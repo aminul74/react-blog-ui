@@ -1,20 +1,35 @@
-/* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import DropDownButton from "./DropDownButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../ContextApi/AuthContext";
 import axios from "axios";
+import Modal from "./Modal";
+import BlogForm from "./BlogForm";
+import { useBlogContext } from "../ContextApi/BlogContext";
 
 function BlogDetails() {
   const [isaBlogDetails, setIsBlogDetails] = useState(false);
-  const [stateBlog, setStateBlog] = useState([]);
-  const { token } = useAuth();
+  const [currentBlog, setCurrentBlog] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+  const { setBlogList } = useBlogContext();
+  const { token, logout } = useAuth();
   const { uuId } = useParams();
   const navigate = useNavigate();
 
+  // const [editedTitle, setEditedTitle] = useState("");
+  // const [editedContent, setEditedContent] = useState("");
+
   const handleDropDown = () => {
     setIsBlogDetails(!isaBlogDetails);
+  };
+
+  const handleButtonClick = (label) => {
+    if (label === "Edit") {
+      setOpenModal(true);
+    } else if (label === "Delete") {
+      logout();
+    }
   };
 
   useEffect(() => {
@@ -29,7 +44,11 @@ function BlogDetails() {
             },
           }
         );
-        setStateBlog(res.data);
+        setCurrentBlog(res.data[0]);
+        // setEditedTitle(res.data[0].title);
+        // setEditedContent(res.data[0].content);
+
+        console.log("Data", res.data);
       } catch (error) {
         console.error("Error getting blog:", error);
       }
@@ -37,10 +56,36 @@ function BlogDetails() {
     blogByUUId();
   }, [uuId, token]);
 
+  const handleSaveEdit = async (blog) => {
+   
+    try {
+      const res = await axios.put(
+        `http://localhost:4001/api/v1/blogs/${uuId}`,
+        blog,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCurrentBlog(res.data[0]);
+      // Get Updated Blog
+      const updatedBlogs = await axios.get(
+        "http://localhost:4001/api/v1/blogs"
+      );
+
+      setBlogList(updatedBlogs.data);
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Error editing the blog:", error);
+    }
+  };
+
   return (
     <div style={{ minHeight: "10px" }}>
       <div className="flex justify-center items-center mt-5">
-        <div className=" relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20">
+        <div className=" relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20 ">
           {token ? (
             <div className="flex items-center justify-end">
               <Button
@@ -65,18 +110,16 @@ function BlogDetails() {
           {isaBlogDetails && (
             <div className="dropDown-button">
               <DropDownButton
-                setIsBlogDetails={setIsBlogDetails}
-                className={
-                  "absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white text-black hover:scale-105 duration-200 "
-                }
+                labels={["Edit", "Delete"]}
+                handleButtonClick={handleButtonClick}
               />
             </div>
           )}
 
-          {stateBlog.map((blog) => (
-            <div className="blog-details" key={blog.id}>
+          {Object.keys(currentBlog).length > 0 && (
+            <div className="blog-details" key={currentBlog.id}>
               <div className="w-full mx-auto space-y-4 text-center">
-                <h1 className="text-2xl font-normal font-bold">{blog.title}</h1>
+                <h1 className="text-2xl font-normal">{currentBlog.title}</h1>
                 <div className="text-sm">
                   by
                   <a
@@ -86,7 +129,7 @@ function BlogDetails() {
                     className="underline text-violet-400"
                   >
                     <p itemProp="name p-2 font-normal font-bold">
-                      {blog.authorId}
+                      {currentBlog.authorId}
                     </p>
                   </a>
                   <div>8 Jan 2024</div>
@@ -95,15 +138,29 @@ function BlogDetails() {
               <div className="pt-12 border-t border-gray-200">
                 <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-6 md:flex-row">
                   <div className="flex flex-col">
-                    <h4 className="text-lg font-bold">{blog.title}</h4>
+                    <h4 className="text-lg font-bold">{currentBlog.title}</h4>
                     <p className="first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:text-black first-letter:mr-3 first-letter:float-left text-black text-xl font-normal">
-                      {blog.content}
+                      {currentBlog.content}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-          ))}
+          )}
+          <div>
+            {openModal && (
+              <Modal onClose={() => setOpenModal(false)} open={openModal}>
+                <BlogForm
+                  onSubmit={handleSaveEdit}
+                  title={currentBlog.title}
+                  content={currentBlog.content}
+                  // setTitle={setEditedTitle}
+                  // setContent={setEditedContent}
+                  isEditingPhase={isaBlogDetails}
+                />
+              </Modal>
+            )}
+          </div>
           <div className="flex justify-end items-center">
             <Button
               href="#"

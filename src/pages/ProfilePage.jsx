@@ -75,7 +75,6 @@ const ProfilePage = () => {
             href="#"
             className="font-medium leading-none text-md text-gray-900 hover:text-indigo-600 transition duration-500 ease-in-out"
           >
-            {user.username}
           </a>
           <p>Blogger</p>
         </div>
