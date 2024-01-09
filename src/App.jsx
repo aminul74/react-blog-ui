@@ -25,6 +25,7 @@ function App() {
         <Routes>
           <Route path="/not" element={<NotFound />} />
           <Route path="/" element={<Blogs />} />
+          {/* <Route path="/blogs/:page" element={<Blogs />} /> */}
           <Route path="/login" element={<UserForm />} />
           <Route path="/user/:userId" element={<ProfilePage />} />
           <Route path="/blog/:uuId" element={<BlogDetails />} />

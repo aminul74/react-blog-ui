@@ -9,6 +9,7 @@ import Pagination from "../components/Pagination";
 import Notification from "../components/Notification";
 import HeroSection from "../components/HeroSection";
 import Modal from "../components/Modal";
+// import { useParams } from "react-router-dom";
 
 const BlogsPage = () => {
   const { token } = useAuth();
@@ -16,11 +17,12 @@ const BlogsPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
   const [messageVisibility, setMessageVisibility] = useState(false);
+  // const { page:currentpage } = useParams();
   // const cancelButtonRef = useRef(null);
-  const { blogList, setBlogList } = useBlogContext();
-  //const [title, setTitle] = useState("");
-  //const [content, setContent] = useState("");
+  const { blogList, setBlogList, currentPage, setCurrentPage } =
+    useBlogContext();
   const [errorMessage, setErrorMessage] = useState("");
+  //  const [data, setData] = useState([]);
 
   const messageSetAs = useCallback((message) => {
     setOpenModal(false);
@@ -32,20 +34,33 @@ const BlogsPage = () => {
     setMessageVisibility(false);
   };
 
+  console.log("page", currentPage);
+  const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${currentPage}&size=5`;
+  const handlePrevClick = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextClick = () => {
+    setCurrentPage(currentPage + 1);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4001/api/v1/blogs");
+        const response = await axios.get(apiEndpoint);
         setLoading(false);
         setBlogList(response.data);
+        console.log("PAGINATION :", response.data);
       } catch (error) {
         setLoading(false);
-        console.error("Error fetching blogs:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [apiEndpoint]);
 
   const handleCreateBlog = async (blog) => {
     try {
@@ -143,8 +158,12 @@ const BlogsPage = () => {
           <BlogCard blog={blog} setBlogList={setBlogList} key={blog.id} />
         ))}
       </div>
-      <div className="item-center sticky bottom-0 z-50">
-        <Pagination />
+      <div className="item-center sticky bottom-20 z-40 mt-16">
+        <Pagination
+          handleNextClick={() => handleNextClick()}
+          handlePrevClick={() => handlePrevClick()}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );

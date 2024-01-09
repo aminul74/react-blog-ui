@@ -28,7 +28,7 @@ function BlogDetails() {
     if (label === "Edit") {
       setOpenModal(true);
     } else if (label === "Delete") {
-      logout();
+      handleDelete(uuId);
     }
   };
 
@@ -57,7 +57,6 @@ function BlogDetails() {
   }, [uuId, token]);
 
   const handleSaveEdit = async (blog) => {
-   
     try {
       const res = await axios.put(
         `http://localhost:4001/api/v1/blogs/${uuId}`,
@@ -79,6 +78,22 @@ function BlogDetails() {
       setOpenModal(false);
     } catch (error) {
       console.error("Error editing the blog:", error);
+    }
+  };
+
+  const handleDelete = async (uuId) => {
+    try {
+      await axios.delete(`http://localhost:4001/api/v1/blogs/${uuId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      setBlogList((prevBlogs) => prevBlogs.filter((blog) => blog.id !== uuId));
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting the blog:", error);
     }
   };
 

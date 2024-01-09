@@ -1,26 +1,11 @@
-const Pagination = ({ incrementPage, decrementPage }) => {
+const Pagination = ({ handleNextClick, handlePrevClick, currentPage }) => {
   return (
     <>
       <div className="flex flex-col items-center">
-        {/* Help text */}
-        <span className="text-sm text-gray-700 dark:text-gray-400">
-          Showing{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">1</span>{" "}
-          to{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            10
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            100
-          </span>{" "}
-          Entries
-        </span>
         <div className="inline-flex mt-2 xs:mt-0">
-          {/* Buttons */}
           <button
+            onClick={handlePrevClick}
             className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white hover:scale-105 duration-200"
-            onClick={decrementPage}
           >
             <svg
               className="w-3.5 h-3.5 ms-2 rotate-180 mr-2"
@@ -39,8 +24,8 @@ const Pagination = ({ incrementPage, decrementPage }) => {
             Prev
           </button>
           <button
+            onClick={handleNextClick}
             className="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e  dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white hover:scale-105 duration-200"
-            onClick={incrementPage}
           >
             Next
             <svg
