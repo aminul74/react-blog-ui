@@ -1,4 +1,3 @@
-// eslint-disable-next-line react/prop-types
 function InputField({ id, className, type, value, onChange, placeholder }) {
   return (
     <div className="Input">

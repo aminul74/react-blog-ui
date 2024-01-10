@@ -36,6 +36,7 @@ const BlogsPage = () => {
 
   console.log("page", currentPage);
   const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${currentPage}&size=5`;
+  
   const handlePrevClick = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
@@ -83,7 +84,7 @@ const BlogsPage = () => {
       setErrorMessage("");
     } catch (error) {
       console.error("Error:", error);
-      setErrorMessage("Error creating the blog. Please try again.");
+      // setErrorMessage("Error creating the blog. Please try again.");
     }
   };
 

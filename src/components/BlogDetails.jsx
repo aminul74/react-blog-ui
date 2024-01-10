@@ -17,9 +17,6 @@ function BlogDetails() {
   const { uuId } = useParams();
   const navigate = useNavigate();
 
-  // const [editedTitle, setEditedTitle] = useState("");
-  // const [editedContent, setEditedContent] = useState("");
-
   const handleDropDown = () => {
     setIsBlogDetails(!isaBlogDetails);
   };
@@ -45,8 +42,6 @@ function BlogDetails() {
           }
         );
         setCurrentBlog(res.data[0]);
-        // setEditedTitle(res.data[0].title);
-        // setEditedContent(res.data[0].content);
 
         console.log("Data", res.data);
       } catch (error) {
@@ -168,9 +163,7 @@ function BlogDetails() {
                 <BlogForm
                   onSubmit={handleSaveEdit}
                   title={currentBlog.title}
-                  content={currentBlog.content}
-                  // setTitle={setEditedTitle}
-                  // setContent={setEditedContent}
+                  content={currentBlog.content} 
                   isEditingPhase={isaBlogDetails}
                 />
               </Modal>
