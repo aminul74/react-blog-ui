@@ -9,7 +9,7 @@ import Pagination from "../components/Pagination";
 import Notification from "../components/Notification";
 import HeroSection from "../components/HeroSection";
 import Modal from "../components/Modal";
-// import { useParams } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 
 const BlogsPage = () => {
   const { token } = useAuth();
@@ -17,12 +17,10 @@ const BlogsPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
   const [messageVisibility, setMessageVisibility] = useState(false);
-  // const { page:currentpage } = useParams();
-  // const cancelButtonRef = useRef(null);
+
   const { blogList, setBlogList, currentPage, setCurrentPage } =
     useBlogContext();
   const [errorMessage, setErrorMessage] = useState("");
-  //  const [data, setData] = useState([]);
 
   const messageSetAs = useCallback((message) => {
     setOpenModal(false);
@@ -34,9 +32,8 @@ const BlogsPage = () => {
     setMessageVisibility(false);
   };
 
-  console.log("page", currentPage);
-  const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${currentPage}&size=5`;
-  
+  const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${currentPage}&size=6`;
+
   const handlePrevClick = () => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
@@ -51,9 +48,10 @@ const BlogsPage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(apiEndpoint);
+        console.log("SETTTTTT", response.data[0]);
         setLoading(false);
         setBlogList(response.data);
-        console.log("PAGINATION :", response.data);
+        // console.log("PAGINATION :", response.data[0]);
       } catch (error) {
         setLoading(false);
         console.error("Error fetching data:", error);
@@ -79,8 +77,6 @@ const BlogsPage = () => {
 
       setBlogList((prevBlogList) => [...prevBlogList, ...response.data]);
       messageSetAs("Blog created successfully!");
-      //setTitle("");
-      //setContent("");
       setErrorMessage("");
     } catch (error) {
       console.error("Error:", error);
@@ -141,13 +137,7 @@ const BlogsPage = () => {
 
       <div>
         <Modal onClose={() => setOpenModal(false)} open={openModal}>
-          <BlogForm
-            onSubmit={handleCreateBlog}
-            title=""
-            // setTitle={setTitle}
-            content=""
-            // setContent={setContent}
-          />
+          <BlogForm onSubmit={handleCreateBlog} title="" content="" />
         </Modal>
       </div>
       <div>
@@ -156,7 +146,7 @@ const BlogsPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-6 max-w-screen-xl mx-auto mt-5">
         {blogList.map((blog) => (
-          <BlogCard blog={blog} setBlogList={setBlogList} key={blog.id} />
+          <BlogCard key={blog.id} blog={blog} setBlogList={setBlogList} />
         ))}
       </div>
       <div className="item-center sticky bottom-20 z-40 mt-16">

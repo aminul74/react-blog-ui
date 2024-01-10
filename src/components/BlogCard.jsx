@@ -14,7 +14,7 @@ function BlogCard({ blog, setBlogList }) {
   const LimitContent = ({ content }) => {
     return (
       <div className="mb-6 text-xl font-normal">
-        {content.length > 15
+        {content && content.length > 15
           ? content.split(" ").slice(0, 15).join(" ") + "..."
           : content}
       </div>
@@ -24,7 +24,6 @@ function BlogCard({ blog, setBlogList }) {
   const handleReadMore = () => {
     navigate(`/blog/${blog.id}`);
   };
-  
 
   return (
     <div className="max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-200 rounded-lg shadow text-black p-12 hover:bg-gray-100 transform hover:scale-105 duration-200">
@@ -57,4 +56,3 @@ function BlogCard({ blog, setBlogList }) {
 }
 
 export default BlogCard;
-
