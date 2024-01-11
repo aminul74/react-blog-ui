@@ -6,11 +6,11 @@ import { AuthProvider } from "./ContextApi/AuthContext";
 import { BlogProvider } from "./ContextApi/BlogContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BlogProvider>
       <AuthProvider>
         <App />
       </AuthProvider>
     </BlogProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

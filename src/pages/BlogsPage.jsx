@@ -5,7 +5,6 @@ import Button from "../components/Button";
 import BlogForm from "../components/BlogForm";
 import BlogCard from "../components/BlogCard";
 import { useBlogContext } from "../ContextApi/BlogContext";
-import Pagination from "../components/Pagination";
 import Notification from "../components/Notification";
 import HeroSection from "../components/HeroSection";
 import Modal from "../components/Modal";
@@ -17,9 +16,14 @@ const BlogsPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
   const [messageVisibility, setMessageVisibility] = useState(false);
-
-  const { blogList, setBlogList, currentPage, setCurrentPage } =
-    useBlogContext();
+  const {
+    blogList,
+    setBlogList,
+    pageNumber,
+    setPageNumber,
+    totalCount,
+    setTotalCount,
+  } = useBlogContext();
   const [errorMessage, setErrorMessage] = useState("");
 
   const messageSetAs = useCallback((message) => {
@@ -31,35 +35,33 @@ const BlogsPage = () => {
   const onMessageHide = () => {
     setMessageVisibility(false);
   };
+  const blogsPerPage = 6;
+  const pageCount = Math.ceil(totalCount / blogsPerPage);
 
-  const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${currentPage}&size=6`;
-
-  const handlePrevClick = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
   };
 
-  const handleNextClick = () => {
-    setCurrentPage(currentPage + 1);
-  };
+
+  const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${
+    pageNumber + 1
+  }&size=${blogsPerPage}`;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(apiEndpoint);
-        console.log("SETTTTTT", response.data[0]);
+        setBlogList(response.data[0]);
+        setTotalCount(response.data[1]);
         setLoading(false);
-        setBlogList(response.data);
-        // console.log("PAGINATION :", response.data[0]);
       } catch (error) {
         setLoading(false);
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [apiEndpoint]);
+  }, [pageNumber, apiEndpoint]);
 
   const handleCreateBlog = async (blog) => {
     try {
@@ -80,7 +82,6 @@ const BlogsPage = () => {
       setErrorMessage("");
     } catch (error) {
       console.error("Error:", error);
-      // setErrorMessage("Error creating the blog. Please try again.");
     }
   };
 
@@ -149,11 +150,20 @@ const BlogsPage = () => {
           <BlogCard key={blog.id} blog={blog} setBlogList={setBlogList} />
         ))}
       </div>
-      <div className="item-center sticky bottom-20 z-40 mt-16">
-        <Pagination
-          handleNextClick={() => handleNextClick()}
-          handlePrevClick={() => handlePrevClick()}
-          currentPage={currentPage}
+      <div className="flex items-center justify-center mt-16">
+        <ReactPaginate
+          forcePage={pageNumber}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={
+            "flex justify-center paginationBttns items-center text-white"
+          }
+          pageClassName="px-2 m-4"
+          previousLinkClassName={"previousBttn"}
+          nextLinkClassName={"nextBttn"}
+          disabledClassName={"paginationDisabled"}
+          activeClassName={" bg-white text-black rounded-full"}
+          previousLabel={pageNumber === 0 ? null : "Previous"}
         />
       </div>
     </div>

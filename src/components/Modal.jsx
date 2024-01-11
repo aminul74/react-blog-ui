@@ -11,6 +11,7 @@ const Modal = ({ open, onClose, children }) => {
         className="relative z-10"
         initialFocus={cancelButtonRef}
         onClose={onClose}
+        // static
       >
         <Transition.Child
           as={Fragment}

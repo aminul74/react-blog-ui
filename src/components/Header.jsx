@@ -3,21 +3,40 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../ContextApi/AuthContext";
 import DropDownButton from "./DropDownButton";
 import Navbar from "./Navbar";
+import Button from "./Button";
+import ConfirmAlert from "./ConfirmAlert";
 
 const Header = () => {
   const { token, user, logout } = useAuth();
   const [isDropDown, setDropDown] = useState(false);
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
   const handleDropDown = () => {
     setDropDown(!isDropDown);
+  };
+
+  const onLogoutButton = () => {
+    setShowAlert(true);
+    setDropDown(false);
   };
 
   const handleButtonClick = (label) => {
     if (label === "Account") {
       navigate(`/user/${user.id}`);
-    } else if (label === "Log Out") {
-      logout();
+    } else if (label === "Logout") {
+      onLogoutButton();
+      // logout();
     }
+  };
+
+  const onLogoutClicked = () => {
+    logout();
+    setShowAlert(false);
+    navigate("/login");
+  };
+
+  const onCancelClicked = () => {
+    setShowAlert(false);
   };
 
   const handleOutsideClick = (event) => {
@@ -62,7 +81,7 @@ const Header = () => {
 
         {token && (
           <div className="relative inline-block text-left">
-            <button
+            <Button
               type="button"
               className="flex items-center bg-slate-800 text-white rounded active:bg-gray-600 hover:bg-slate-700 hover:scale-105 duration-200 px-4 py-2 profile-button"
               onClick={handleDropDown}
@@ -73,18 +92,25 @@ const Header = () => {
                 alt="Profile"
               />
               <span className="mr-2 ml-2 text-xl">{user.username}</span>
-            </button>
+            </Button>
 
             {isDropDown && (
               <div className="profile-dropdown ">
                 <DropDownButton
-                  labels={["Account", "Log Out"]}
+                  labels={["Account", "Logout"]}
                   handleButtonClick={handleButtonClick}
                 />
               </div>
             )}
 
-            <div></div>
+            {showAlert && (
+              <ConfirmAlert
+                onCancel={onCancelClicked}
+                onConfirm={onLogoutClicked}
+                titleMsg={"Logout"}
+                label={"Confirm Logout"}
+              />
+            )}
           </div>
         )}
       </div>

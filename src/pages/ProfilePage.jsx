@@ -5,6 +5,7 @@ import { useAuth } from "../ContextApi/AuthContext";
 import userProfileImage from "../assets/userProfile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ConfirmAlert from "../components/ConfirmAlert";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const ProfilePage = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [passwordChangeError, setPasswordChangeError] = useState(null);
   const { user, token, logout } = useAuth();
+  const [showAlert, setShowAlert] = useState(false);
 
   const handlePasswordChange = async () => {
     try {
@@ -62,9 +64,17 @@ const ProfilePage = () => {
     }
   };
 
+  const onDeleteClick = () => {
+    handleDleleteAccount();
+  };
+
+  const onCancelClick = () => {
+    setShowAlert(false);
+  };
+
   return (
-    <div className="flex items-center justify-center mt-5 p-2">
-      <div className="max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white items-center p-20 border rounded text-center text-gray-500">
+    <div className="flex items-center justify-center ">
+      <div className="max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white items-center p-12 border rounded text-center text-gray-500">
         <img
           className="w-32 h-32 rounded-full mx-auto"
           src={userProfileImage}
@@ -74,8 +84,7 @@ const ProfilePage = () => {
           <a
             href="#"
             className="font-medium leading-none text-md text-gray-900 hover:text-indigo-600 transition duration-500 ease-in-out"
-          >
-          </a>
+          ></a>
           <p>Blogger</p>
         </div>
 
@@ -125,10 +134,19 @@ const ProfilePage = () => {
 
         <Button
           className="bg-red-400 text-white font-bold py-2 px-4 rounded hover:bg-red-600 mt-5"
-          onClick={handleDleleteAccount}
+          onClick={() => setShowAlert(true)}
         >
           Delete Account
         </Button>
+
+        {showAlert && (
+          <ConfirmAlert
+            onCancel={onCancelClick}
+            onConfirm={onDeleteClick}
+            titleMsg={"Delete your profile"}
+            label={"Confirm Delete"}
+          />
+        )}
       </div>
     </div>
   );
