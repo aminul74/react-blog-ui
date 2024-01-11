@@ -16,6 +16,7 @@ const BlogsPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
   const [messageVisibility, setMessageVisibility] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const {
     blogList,
     setBlogList,
@@ -24,7 +25,8 @@ const BlogsPage = () => {
     totalCount,
     setTotalCount,
   } = useBlogContext();
-  const [errorMessage, setErrorMessage] = useState("");
+  const blogsPerPage = 6;
+  const pageCount = Math.ceil(totalCount / blogsPerPage);
 
   const messageSetAs = useCallback((message) => {
     setOpenModal(false);
@@ -35,13 +37,13 @@ const BlogsPage = () => {
   const onMessageHide = () => {
     setMessageVisibility(false);
   };
-  const blogsPerPage = 6;
-  const pageCount = Math.ceil(totalCount / blogsPerPage);
 
-  const changePage = ({ selected }) => {
-    setPageNumber(selected);
+  const changePage = (data) => {
+    const selectedPage = data.selected;
+    console.log("INside", typeof selected);
+
+    setPageNumber(selectedPage);
   };
-
 
   const apiEndpoint = `http://localhost:4001/api/v1/blogs?page=${
     pageNumber + 1
@@ -158,7 +160,7 @@ const BlogsPage = () => {
           containerClassName={
             "flex justify-center paginationBttns items-center text-white"
           }
-          pageClassName="px-2 m-4"
+          pageClassName="px-2 m-6"
           previousLinkClassName={"previousBttn"}
           nextLinkClassName={"nextBttn"}
           disabledClassName={"paginationDisabled"}
