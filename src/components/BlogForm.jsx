@@ -3,7 +3,7 @@ import { useAuth } from "../ContextApi/AuthContext";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 
-const BlogForm = ({ onSubmit, title, content }) => {
+const BlogForm = ({ onSubmit, title, content, isEditing, isPending }) => {
   const { token } = useAuth();
   const {
     register,
@@ -11,8 +11,8 @@ const BlogForm = ({ onSubmit, title, content }) => {
     formState: { errors },
   } = useForm();
 
-  const [localTitle, setLocalTitle] = useState("");
-  const [localContent, setLocalContent] = useState("");
+  const [localTitle, setLocalTitle] = useState(title);
+  const [localContent, setLocalContent] = useState(content);
 
   useEffect(() => {
     setLocalTitle(title);
@@ -30,7 +30,10 @@ const BlogForm = ({ onSubmit, title, content }) => {
   return (
     <div className="form">
       <div className="max-w-xl mx-auto my-8 p-6 bg-white rounded-md shadow-md">
-        <h2 className="text-2xl font-semibold mb-4">Create a new blog</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          {/* {isEditing ? "Edit" : "Create"} a blog */}
+          {isEditing ? "Update" : "Create"} blog
+        </h2>
         <form onSubmit={handleSubmit(submitForm)}>
           <div className="mb-4">
             <label
@@ -86,9 +89,10 @@ const BlogForm = ({ onSubmit, title, content }) => {
             }`}
             disabled={!token}
           >
-            Submit
+            {isEditing ? "Update" : "Submit"}
           </Button>
         </form>
+        {isPending && "Sending Your Data....."}
       </div>
     </div>
   );

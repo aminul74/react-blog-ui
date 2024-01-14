@@ -1,6 +1,9 @@
 import React from "react";
+import Button from "./Button";
+import { Link, useNavigate } from "react-router-dom";
 
 function HeroSection() {
+
   return (
     <div>
       <section className="bg-white dark:bg-gray-800">
@@ -13,8 +16,8 @@ function HeroSection() {
               Dive into the depths of knowledge and uncover stories that
               resonate with curiosity.
             </p>
-            <a
-              href="#"
+            {/* <Link
+              to={"/login"}
               className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
             >
               Get started
@@ -30,7 +33,7 @@ function HeroSection() {
                   clipRule="evenodd"
                 ></path>
               </svg>
-            </a>
+            </Link> */}
             {/* <a
               href="#"
               className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
@@ -38,12 +41,12 @@ function HeroSection() {
               Speak to Sales
             </a> */}
           </div>
-          <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-            {/* <img
+          {/* <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
+            <img
               src="https://unsplash.com/photos/a-man-in-a-wet-suit-swimming-in-the-ocean-pyThxd4x8Tk"
               alt="mockup"
-            /> */}
-          </div>
+            />
+          </div> */}
         </div>
       </section>
     </div>

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 const Notification = ({ message, className, onClose, isVisible }) => {
+  console.log("HIIIIII")
   useEffect(() => {
     let timeoutId = null;
 

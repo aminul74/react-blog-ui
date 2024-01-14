@@ -7,26 +7,42 @@ import axios from "axios";
 import Modal from "./Modal";
 import BlogForm from "./BlogForm";
 import { useBlogContext } from "../ContextApi/BlogContext";
-
+import ConfirmAlert from "./ConfirmAlert";
 function BlogDetails() {
-  const [isaBlogDetails, setIsBlogDetails] = useState(false);
+  const [isDropDown, setIsDropDown] = useState(false);
   const [currentBlog, setCurrentBlog] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const { setBlogList } = useBlogContext();
-  const { token, logout } = useAuth();
+  const { token, logout, user } = useAuth();
   const { uuId } = useParams();
   const navigate = useNavigate();
+  const [isConfirmAlert, setIsConfirmAlert] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const handleDropDown = () => {
-    setIsBlogDetails(!isaBlogDetails);
+    setIsDropDown(!isDropDown);
   };
 
+  console.log("ID", currentBlog.authorId);
+  console.log("User", user.id);
   const handleButtonClick = (label) => {
     if (label === "Edit") {
       setOpenModal(true);
+      setIsDropDown(false);
+      setEdit(true);
     } else if (label === "Delete") {
-      handleDelete(uuId);
+      setIsConfirmAlert(true);
+      setIsDropDown(false);
+      // handleDelete(uuId);
     }
+  };
+
+  const havePermission = (uuId) => {
+    handleDelete(uuId);
+  };
+
+  const onCancel = () => {
+    setIsConfirmAlert(false);
   };
 
   useEffect(() => {
@@ -77,6 +93,7 @@ function BlogDetails() {
   };
 
   const handleDelete = async (uuId) => {
+    // console.log("jhgjgggg");
     try {
       await axios.delete(`http://localhost:4001/api/v1/blogs/${uuId}`, {
         headers: {
@@ -93,10 +110,22 @@ function BlogDetails() {
   };
 
   return (
-    <div style={{ minHeight: "10px" }}>
-      <div className="flex justify-center items-center mt-5">
-        <div className=" relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20 ">
-          {token ? (
+    <div>
+      {/* <div class="max-w-4xl px-10 my-4 py-6 bg-white rounded-lg shadow-md"> */}
+      <div className="flex justify-center items-center px-20 py-2 rounded-lg">
+        <div className="h-full relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20 ">
+          {isConfirmAlert && (
+            <div>
+              <ConfirmAlert
+                onCancel={onCancel}
+                onConfirm={() => havePermission(uuId)}
+                titleMsg={"Delete"}
+                label={"Delete"}
+              />
+            </div>
+          )}
+
+          {user.id == currentBlog.authorId ? (
             <div className="flex items-center justify-end">
               <Button
                 id="dropdownMenuIconHorizontalButton"
@@ -117,7 +146,7 @@ function BlogDetails() {
               </Button>
             </div>
           ) : null}
-          {isaBlogDetails && (
+          {isDropDown && (
             <div className="dropDown-button">
               <DropDownButton
                 labels={["Edit", "Delete"]}
@@ -163,8 +192,8 @@ function BlogDetails() {
                 <BlogForm
                   onSubmit={handleSaveEdit}
                   title={currentBlog.title}
-                  content={currentBlog.content} 
-                  isEditingPhase={isaBlogDetails}
+                  content={currentBlog.content}
+                  isEditing={edit}
                 />
               </Modal>
             )}

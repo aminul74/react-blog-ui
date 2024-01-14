@@ -3,8 +3,9 @@ import Button from "./Button";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import BlogDetails from "./BlogDetails";
 
-function BlogCard({ blog, setBlogList }) {
-  // console.log("in card");
+function BlogCard({ blog }) {
+  console.log("in card", blog.id);
+
   const dateObject = new Date(blog.createdAt);
   const navigate = useNavigate();
   const formattedDate = dateObject.toLocaleDateString("en-US", {

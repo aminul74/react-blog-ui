@@ -14,6 +14,7 @@ import BlogDetails from "./components/BlogDetails";
 import NotFound from "./components/NotFound";
 import About from "./pages/About";
 import ConfirmAlert from "./components/ConfirmAlert";
+import Check from "./components/Check";
 
 const MemoizedHeader = React.memo(Header);
 const MemoizedFooter = React.memo(Footer);
@@ -25,6 +26,7 @@ function App() {
       <div style={{ minHeight: "100vh", position: "relative" }}>
         <Routes>
           <Route path="/not" element={<NotFound />} />
+          <Route path="/check" element={<Check />} />
           <Route path="/confirm" element={<ConfirmAlert />} />
           <Route path="/" element={<Blogs />} />
           {/* <Route path="/blogs/:page" element={<Blogs />} /> */}
