@@ -4,8 +4,6 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import BlogDetails from "./BlogDetails";
 
 function BlogCard({ blog }) {
-  console.log("in card", blog.id);
-
   const dateObject = new Date(blog.createdAt);
   const navigate = useNavigate();
   const formattedDate = dateObject.toLocaleDateString("en-US", {
@@ -13,6 +11,7 @@ function BlogCard({ blog }) {
     month: "short",
     year: "numeric",
   });
+
   const LimitContent = ({ content }) => {
     return (
       <div className="mb-6 text-xl font-normal">

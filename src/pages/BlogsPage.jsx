@@ -16,18 +16,19 @@ const BlogsPage = () => {
   const queryClient = useQueryClient();
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
-  const [messageVisibility, setMessageVisibility] = useState(false);
+  const [toastPopUp, setToastPopUp] = useState(false);
   const { pageNumber, setPageNumber } = useBlogContext();
   const nextPage = pageNumber + 1;
   const blogsPerPage = 6;
+
   const messageSetAs = useCallback((message) => {
     setOpenModal(false);
     setMessage(message);
-    setMessageVisibility(true);
+    setToastPopUp(true);
   });
 
   const onMessageHide = () => {
-    setMessageVisibility(false);
+    setToastPopUp(false);
   };
 
   const changePage = (data) => {
@@ -37,17 +38,20 @@ const BlogsPage = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["blogs", nextPage, blogsPerPage],
     queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:4001/api/v1/blogs?page=${nextPage}&size=${blogsPerPage}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      try {
+        const response = await axios.get(
+          `http://localhost:4001/api/v1/blogs?page=${nextPage}&size=${blogsPerPage}`
+        );
+        if (response.status !== 200) {
+          throw new Error("Network response was not ok");
+        }
+        return response.data;
+      } catch (error) {
+        console.error("An error occurred:", error);
       }
-
-      return response.json();
     },
   });
-  
+
   const blogs = data ? data[0] : [];
   const totalCount = data ? data[1] : [];
 
@@ -84,12 +88,12 @@ const BlogsPage = () => {
 
   return (
     <div className="relative">
-      {messageVisibility && (
+      {toastPopUp && (
         <div>
           <Notification
             message={message}
             onClose={onMessageHide}
-            isVisible={messageVisibility}
+            isVisible={setToastPopUp}
           />
         </div>
       )}
@@ -122,8 +126,8 @@ const BlogsPage = () => {
             "flex justify-center paginationBttns items-center text-white"
           }
           pageClassName="px-2 m-6"
-          previousLinkClassName={"previousBttn p-4"}
-          nextLinkClassName={"nextBttn p-4"}
+          previousLinkClassName={"previousBttn"}
+          nextLinkClassName={"nextBttn"}
           disabledClassName={"paginationDisabled"}
           activeClassName={" bg-white text-black rounded-full"}
           previousLabel={pageNumber === 0 ? null : "Previous"}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "./Button";
 import DropDownButton from "./DropDownButton";
 import { useNavigate, useParams } from "react-router-dom";
@@ -8,9 +8,13 @@ import Modal from "./Modal";
 import BlogForm from "./BlogForm";
 import { useBlogContext } from "../ContextApi/BlogContext";
 import ConfirmAlert from "./ConfirmAlert";
+import { BeatLoader } from "react-spinners";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Notification from "./Notification";
+
 function BlogDetails() {
   const [isDropDown, setIsDropDown] = useState(false);
-  const [currentBlog, setCurrentBlog] = useState({});
+  // const [currentBlog, setCurrentBlog] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const { setBlogList } = useBlogContext();
   const { token, logout, user } = useAuth();
@@ -18,13 +22,15 @@ function BlogDetails() {
   const navigate = useNavigate();
   const [isConfirmAlert, setIsConfirmAlert] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [toastPopUp, setToastPopUp] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const queryClient = useQueryClient();
 
   const handleDropDown = () => {
     setIsDropDown(!isDropDown);
   };
 
-  console.log("ID", currentBlog.authorId);
-  console.log("User", user.id);
   const handleButtonClick = (label) => {
     if (label === "Edit") {
       setOpenModal(true);
@@ -33,22 +39,14 @@ function BlogDetails() {
     } else if (label === "Delete") {
       setIsConfirmAlert(true);
       setIsDropDown(false);
-      // handleDelete(uuId);
     }
   };
 
-  const havePermission = (uuId) => {
-    handleDelete(uuId);
-  };
-
-  const onCancel = () => {
-    setIsConfirmAlert(false);
-  };
-
-  useEffect(() => {
-    const blogByUUId = async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["blogByUUID", uuId],
+    queryFn: async () => {
       try {
-        const res = await axios.get(
+        const response = await axios.get(
           `http://localhost:4001/api/v1/blogs/${uuId}`,
           {
             headers: {
@@ -57,21 +55,27 @@ function BlogDetails() {
             },
           }
         );
-        setCurrentBlog(res.data[0]);
-
-        console.log("Data", res.data);
+        return response.data;
       } catch (error) {
-        console.error("Error getting blog:", error);
+        console.error("An error occurred:", error);
       }
-    };
-    blogByUUId();
-  }, [uuId, token]);
+    },
+  });
 
-  const handleSaveEdit = async (blog) => {
-    try {
-      const res = await axios.put(
+  const blog = data ? data[0] : [];
+
+  const onUpdateBlog = useCallback((message) => {
+    setOpenModal(false);
+    setMessage(message);
+    setToastPopUp(true);
+  });
+
+  const { mutate, isPending, isError, Error } = useMutation({
+    mutationKey: ["editBlog", uuId, blog],
+    mutationFn: async (updatedblog) => {
+      return axios.put(
         `http://localhost:4001/api/v1/blogs/${uuId}`,
-        blog,
+        updatedblog,
         {
           headers: {
             "Content-Type": "application/json",
@@ -79,53 +83,83 @@ function BlogDetails() {
           },
         }
       );
-      setCurrentBlog(res.data[0]);
-      // Get Updated Blog
-      const updatedBlogs = await axios.get(
-        "http://localhost:4001/api/v1/blogs"
-      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogByUUID", uuId],
+        exact: true,
+      });
+      onUpdateBlog("Your blog update successfully!");
+    },
+  });
 
-      setBlogList(updatedBlogs.data);
-      setOpenModal(false);
-    } catch (error) {
-      console.error("Error editing the blog:", error);
-    }
+  const handleSaveEdit = (blog) => {
+    mutate(blog);
   };
 
-  const handleDelete = async (uuId) => {
-    // console.log("jhgjgggg");
-    try {
+  const onDeleteBlog = useCallback((message) => {
+    setMessage(message);
+    setToastPopUp(true);
+    setIsConfirmAlert(false);
+    navigate("/");
+  });
+
+  const { mutate: deleteBlog } = useMutation({
+    mutationFn: async (uuId) => {
       await axios.delete(`http://localhost:4001/api/v1/blogs/${uuId}`, {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
         },
       });
+    },
+    onSuccess: () => {
+      onDeleteBlog("Delete successful");
+    },
+  });
 
-      setBlogList((prevBlogs) => prevBlogs.filter((blog) => blog.id !== uuId));
-      navigate("/");
-    } catch (error) {
-      console.error("Error deleting the blog:", error);
-    }
+  const handleDelete = (uuId) => {
+    deleteBlog(uuId);
   };
+
+  const onCancel = () => {
+    setIsConfirmAlert(false);
+  };
+  // const handleDelete =
+
+  if (isLoading) {
+    return (
+      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+        <BeatLoader color="#ffffff" loading={isLoading} />
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* <div class="max-w-4xl px-10 my-4 py-6 bg-white rounded-lg shadow-md"> */}
+      {toastPopUp && (
+        <div>
+          <Notification
+            message={message}
+            onClose={() => setToastPopUp(false)}
+            isVisible={setToastPopUp}
+          />
+        </div>
+      )}
       <div className="flex justify-center items-center px-20 py-2 rounded-lg">
         <div className="h-full relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20 ">
           {isConfirmAlert && (
             <div>
               <ConfirmAlert
                 onCancel={onCancel}
-                onConfirm={() => havePermission(uuId)}
+                onConfirm={() => handleDelete(uuId)}
                 titleMsg={"Delete"}
                 label={"Delete"}
               />
             </div>
           )}
 
-          {user.id == currentBlog.authorId ? (
+          {user.id == blog.authorId ? (
             <div className="flex items-center justify-end">
               <Button
                 id="dropdownMenuIconHorizontalButton"
@@ -155,10 +189,10 @@ function BlogDetails() {
             </div>
           )}
 
-          {Object.keys(currentBlog).length > 0 && (
-            <div className="blog-details" key={currentBlog.id}>
+          {Object.keys(blog).length > 0 && (
+            <div className="blog-details" key={blog.id}>
               <div className="w-full mx-auto space-y-4 text-center">
-                <h1 className="text-2xl font-normal">{currentBlog.title}</h1>
+                <h1 className="text-2xl font-normal">{blog.title}</h1>
                 <div className="text-sm">
                   by
                   <a
@@ -168,7 +202,7 @@ function BlogDetails() {
                     className="underline text-violet-400"
                   >
                     <p itemProp="name p-2 font-normal font-bold">
-                      {currentBlog.authorId}
+                      {blog.authorId}
                     </p>
                   </a>
                   <div>8 Jan 2024</div>
@@ -177,9 +211,9 @@ function BlogDetails() {
               <div className="pt-12 border-t border-gray-200">
                 <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-6 md:flex-row">
                   <div className="flex flex-col">
-                    <h4 className="text-lg font-bold">{currentBlog.title}</h4>
+                    <h4 className="text-lg font-bold">{blog.title}</h4>
                     <p className="first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:text-black first-letter:mr-3 first-letter:float-left text-black text-xl font-normal">
-                      {currentBlog.content}
+                      {blog.content}
                     </p>
                   </div>
                 </div>
@@ -191,9 +225,10 @@ function BlogDetails() {
               <Modal onClose={() => setOpenModal(false)} open={openModal}>
                 <BlogForm
                   onSubmit={handleSaveEdit}
-                  title={currentBlog.title}
-                  content={currentBlog.content}
+                  title={blog.title}
+                  content={blog.content}
                   isEditing={edit}
+                  isPending={isPending}
                 />
               </Modal>
             )}
@@ -214,3 +249,4 @@ function BlogDetails() {
 }
 
 export default BlogDetails;
+

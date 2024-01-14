@@ -14,12 +14,13 @@ const BlogForm = ({ onSubmit, title, content, isEditing, isPending }) => {
   const [localTitle, setLocalTitle] = useState(title);
   const [localContent, setLocalContent] = useState(content);
 
-  useEffect(() => {
-    setLocalTitle(title);
-    setLocalContent(content);
-  }, [title, content]);
+  // useEffect(() => {
+  //   setLocalTitle(title);
+  //   setLocalContent(content);
+  // }, [title, content]);
 
   const submitForm = (data) => {
+    // console.log("Inside", data);
     const blog = {
       title: data.title,
       content: data.content,
@@ -31,7 +32,6 @@ const BlogForm = ({ onSubmit, title, content, isEditing, isPending }) => {
     <div className="form">
       <div className="max-w-xl mx-auto my-8 p-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-semibold mb-4">
-          {/* {isEditing ? "Edit" : "Create"} a blog */}
           {isEditing ? "Update" : "Create"} blog
         </h2>
         <form onSubmit={handleSubmit(submitForm)}>
