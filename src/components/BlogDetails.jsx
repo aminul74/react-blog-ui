@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import Button from "./Button";
 import DropDownButton from "./DropDownButton";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,7 +6,6 @@ import { useAuth } from "../ContextApi/AuthContext";
 import axios from "axios";
 import Modal from "./Modal";
 import BlogForm from "./BlogForm";
-import { useBlogContext } from "../ContextApi/BlogContext";
 import ConfirmAlert from "./ConfirmAlert";
 import { BeatLoader } from "react-spinners";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,17 +13,14 @@ import Notification from "./Notification";
 
 function BlogDetails() {
   const [isDropDown, setIsDropDown] = useState(false);
-  // const [currentBlog, setCurrentBlog] = useState({});
   const [openModal, setOpenModal] = useState(false);
-  const { setBlogList } = useBlogContext();
-  const { token, logout, user } = useAuth();
+  const { token, user } = useAuth();
   const { uuId } = useParams();
   const navigate = useNavigate();
   const [isConfirmAlert, setIsConfirmAlert] = useState(false);
   const [edit, setEdit] = useState(false);
   const [toastPopUp, setToastPopUp] = useState(false);
   const [message, setMessage] = useState("");
-
   const queryClient = useQueryClient();
 
   const handleDropDown = () => {
@@ -55,11 +51,25 @@ function BlogDetails() {
             },
           }
         );
+        if (response.status !== 200) {
+          throw new Error("Network response was not ok");
+        }
+
         return response.data;
       } catch (error) {
-        console.error("An error occurred:", error);
+        if (error.response?.status === 404) {
+          return null;
+        }
+        throw error;
       }
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogs", nextPage, blogsPerPage],
+        exact: true,
+      });
+    },
+    staleTime: 10000,
   });
 
   const blog = data ? data[0] : [];
@@ -86,7 +96,7 @@ function BlogDetails() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["blogByUUID", uuId],
+        mutationKey: ["blogByUUID", uuId],
         exact: true,
       });
       onUpdateBlog("Your blog update successfully!");
@@ -104,8 +114,14 @@ function BlogDetails() {
     navigate("/");
   });
 
-  const { mutate: deleteBlog } = useMutation({
-    mutationFn: async (uuId) => {
+  const {
+    mutate: deleteBlog,
+    isPending: isDeletePending,
+    error,
+  } = useMutation({
+    mutationKey: ["deleteBlog", uuId],
+    mutationFn: async () => {
+      console.log("AXIOS");
       await axios.delete(`http://localhost:4001/api/v1/blogs/${uuId}`, {
         headers: {
           "Content-Type": "application/json",
@@ -114,23 +130,35 @@ function BlogDetails() {
       });
     },
     onSuccess: () => {
+      console.log("INSIDE", uuId);
+      queryClient.invalidateQueries({
+        mutationKey: ["blogByUUID", uuId],
+        exact: true,
+      });
       onDeleteBlog("Delete successful");
     },
   });
 
-  const handleDelete = (uuId) => {
-    deleteBlog(uuId);
+  const handleDelete = () => {
+    deleteBlog();
   };
 
   const onCancel = () => {
     setIsConfirmAlert(false);
   };
-  // const handleDelete =
 
   if (isLoading) {
     return (
       <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
         <BeatLoader color="#ffffff" loading={isLoading} />
+      </div>
+    );
+  }
+
+  if (isDeletePending) {
+    return (
+      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+        <BeatLoader color="#ffffff" loading={isDeletePending} />
       </div>
     );
   }
@@ -159,7 +187,7 @@ function BlogDetails() {
             </div>
           )}
 
-          {user.id == blog.authorId ? (
+          {user?.id == blog.authorId ? (
             <div className="flex items-center justify-end">
               <Button
                 id="dropdownMenuIconHorizontalButton"
@@ -242,6 +270,9 @@ function BlogDetails() {
               Go Back
             </Button>
           </div>
+          {/* {isDeletePending && (
+            <BeatLoader color="#ffffff" loading={isLoading} />
+          )} */}
         </div>
       </div>
     </div>
@@ -249,4 +280,3 @@ function BlogDetails() {
 }
 
 export default BlogDetails;
-

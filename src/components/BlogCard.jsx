@@ -1,7 +1,5 @@
 import React from "react";
-import Button from "./Button";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import BlogDetails from "./BlogDetails";
+import { Link, useNavigate } from "react-router-dom";
 
 function BlogCard({ blog }) {
   const dateObject = new Date(blog.createdAt);
@@ -36,7 +34,7 @@ function BlogCard({ blog }) {
             alt="Avatar of Jonathan Reinink"
           />
           <div className="text-lg">
-            <p className="leading-none">1</p>
+            <p className="leading-none">{blog.User.username}</p>
             <p>{formattedDate}</p>
           </div>
         </div>

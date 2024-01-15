@@ -16,13 +16,13 @@ import About from "./pages/About";
 import ConfirmAlert from "./components/ConfirmAlert";
 import Check from "./components/Check";
 
-const MemoizedHeader = React.memo(Header);
-const MemoizedFooter = React.memo(Footer);
+// const MemoizedHeader = React.memo(Header);
+// const MemoizedFooter = React.memo(Footer);
 
 function App() {
   return (
     <Router>
-      <MemoizedHeader />
+      <Header />
       <div style={{ minHeight: "100vh", position: "relative" }}>
         <Routes>
           <Route path="/not" element={<NotFound />} />
@@ -38,7 +38,7 @@ function App() {
         </Routes>
       </div>
       <div style={{ position: "sticky", bottom: 0, marginTop: 10 }}>
-        <MemoizedFooter />
+        <Footer />
       </div>
     </Router>
   );
