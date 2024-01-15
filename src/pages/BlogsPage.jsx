@@ -39,19 +39,12 @@ const BlogsPage = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["blogs", nextPage, blogsPerPage],
     queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4001/api/v1/blogs?page=${nextPage}&size=${blogsPerPage}`
-        );
-        if (response.status !== 200) {
-          throw new Error("Network response was not ok");
-        }
-        return response.data;
-      } catch (error) {
-        console.error("An error occurred:", error);
-      }
+      const response = await axios.get(
+        `http://localhost:4001/api/v1/blogs?page=${nextPage}&size=${blogsPerPage}`
+      );
+      return response.data;
     },
-    staleTime: 12000,
+    staleTime: 14000,
   });
 
   const blogs = data ? data[0] : [];
@@ -60,7 +53,7 @@ const BlogsPage = () => {
 
   const { mutate, isPending, isError, Error } = useMutation({
     mutationFn: async (blog) => {
-      return axios.post("http://localhost:4001/api/v1/blogs/create", blog, {
+      await axios.post("http://localhost:4001/api/v1/blogs/create", blog, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -69,8 +62,7 @@ const BlogsPage = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["blogs", nextPage, blogsPerPage],
+      queryClient.invalidateQueries(["blogs", nextPage, blogsPerPage], {
         exact: true,
       });
       messageSetAs("Blog created successfully!");

@@ -41,38 +41,22 @@ function BlogDetails() {
   const { data, isLoading } = useQuery({
     queryKey: ["blogByUUID", uuId],
     queryFn: async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4001/api/v1/blogs/${uuId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.status !== 200) {
-          throw new Error("Network response was not ok");
+      const response = await axios.get(
+        `http://localhost:4001/api/v1/blogs/${uuId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        return response.data;
-      } catch (error) {
-        if (error.response?.status === 404) {
-          return null;
-        }
-        throw error;
-      }
+      return response.data ? response.data[0] : [];
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["blogs", nextPage, blogsPerPage],
-        exact: true,
-      });
-    },
-    staleTime: 10000,
+    staleTime: 14000,
   });
 
-  const blog = data ? data[0] : [];
+  const blog = data;
 
   const onUpdateBlog = useCallback((message) => {
     setOpenModal(false);
@@ -83,7 +67,7 @@ function BlogDetails() {
   const { mutate, isPending, isError, Error } = useMutation({
     mutationKey: ["editBlog", uuId, blog],
     mutationFn: async (updatedblog) => {
-      return axios.put(
+      await axios.put(
         `http://localhost:4001/api/v1/blogs/${uuId}`,
         updatedblog,
         {
@@ -95,8 +79,7 @@ function BlogDetails() {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        mutationKey: ["blogByUUID", uuId],
+      queryClient.invalidateQueries(["blogByUUID", uuId], {
         exact: true,
       });
       onUpdateBlog("Your blog update successfully!");
@@ -121,7 +104,6 @@ function BlogDetails() {
   } = useMutation({
     mutationKey: ["deleteBlog", uuId],
     mutationFn: async () => {
-      console.log("AXIOS");
       await axios.delete(`http://localhost:4001/api/v1/blogs/${uuId}`, {
         headers: {
           "Content-Type": "application/json",
@@ -130,11 +112,7 @@ function BlogDetails() {
       });
     },
     onSuccess: () => {
-      console.log("INSIDE", uuId);
-      queryClient.invalidateQueries({
-        mutationKey: ["blogByUUID", uuId],
-        exact: true,
-      });
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
       onDeleteBlog("Delete successful");
     },
   });
@@ -147,18 +125,10 @@ function BlogDetails() {
     setIsConfirmAlert(false);
   };
 
-  if (isLoading) {
+  if (isLoading || isDeletePending) {
     return (
       <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
-        <BeatLoader color="#ffffff" loading={isLoading} />
-      </div>
-    );
-  }
-
-  if (isDeletePending) {
-    return (
-      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
-        <BeatLoader color="#ffffff" loading={isDeletePending} />
+        <BeatLoader color="#ffffff" loading={isLoading || isDeletePending} />
       </div>
     );
   }
