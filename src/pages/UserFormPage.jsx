@@ -16,10 +16,10 @@ const UserFormPage = () => {
   };
 
   return (
-    <>
+    <div className="bg-white h-screen">
       <div>{isLogin ? <LoginForm /> : <SignupForm />}</div>
       <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-        <p className="mt-5 text-center text-sm text-gray-500">
+        <p className="mt-5 text-center text-md text-black">
           {isLogin ? "If you are not registered?" : "Already have an account?"}
           <br />
           <a
@@ -30,21 +30,8 @@ const UserFormPage = () => {
             {isLogin ? "Signup here" : "Login here"}
           </a>
         </p>
-        {/* {isSignup && (
-          <div className="">
-            <Button
-              className="md:underline text-blue-500"
-              onClick={() => {
-                setIsSignup(false);
-                setIsLogin(true);
-              }}
-            >
-              Back to Login
-            </Button>
-          </div>
-        )} */}
       </div>
-    </>
+    </div>
   );
 };
 

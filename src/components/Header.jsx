@@ -59,6 +59,14 @@ const Header = () => {
 
   return (
     <nav className="bg-customColor p-4 sticky top-0 z-50 drop-shadow-xl">
+      {showAlert && (
+        <ConfirmAlert
+          onCancel={onCancelClicked}
+          onConfirm={onLogoutClicked}
+          titleMsg={"Logout"}
+          label={"Confirm Logout"}
+        />
+      )}
       <div className="container mx-auto flex justify-between items-center">
         <div>
           <Link to="/">
@@ -101,15 +109,6 @@ const Header = () => {
                   handleButtonClick={handleButtonClick}
                 />
               </div>
-            )}
-
-            {showAlert && (
-              <ConfirmAlert
-                onCancel={onCancelClicked}
-                onConfirm={onLogoutClicked}
-                titleMsg={"Logout"}
-                label={"Confirm Logout"}
-              />
             )}
           </div>
         )}

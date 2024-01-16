@@ -37,7 +37,7 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
       console.log("response", response);
     } catch (error) {
       console.log("error", error);
-    //   setErrorMessage(error.response.data[0].errMessage);
+      setErrorMessage(error.response.data[0].errMessage);
     }
   };
 
@@ -70,12 +70,24 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
       navigate("/");
     } catch (error) {
       errorHandler(error);
-      // setErrorMessage(error.response.data[0].errMessage);
+      setErrorMessage(error.response.data[0].errMessage);
     }
   };
 
+  const errorHandler = (error) => {
+    setErrorMessage(error.response.data[0].errMessage);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setErrorMessage(null);
+    }, 3000);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [errorHandler]);
+
   const onSubmit = (data) => {
-    console.log("first", data);
     if (signup) {
       handleSignup(data);
     } else {
@@ -85,6 +97,7 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <p className="text-red-500">{errorMessage}</p>
       {(isLogin || signup) && (
         <div className="mt-2">
           <InputField
@@ -143,7 +156,7 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
       <div>
         <Button
           type="submit"
-          className="flex w-full justify-center rounded-md bg-cyan-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+          className="flex w-full justify-center rounded-md bg-gray-700 px-3 py-4 font-semibold leading-6 text-white text-md hover:scale-105 duration-200"
         >
           {btnLabel}
         </Button>

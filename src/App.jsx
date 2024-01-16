@@ -16,9 +16,6 @@ import About from "./pages/About";
 import ConfirmAlert from "./components/ConfirmAlert";
 import Check from "./components/Check";
 
-// const MemoizedHeader = React.memo(Header);
-// const MemoizedFooter = React.memo(Footer);
-
 function App() {
   return (
     <Router>
@@ -29,7 +26,6 @@ function App() {
           <Route path="/check" element={<Check />} />
           <Route path="/confirm" element={<ConfirmAlert />} />
           <Route path="/" element={<Blogs />} />
-          {/* <Route path="/blogs/:page" element={<Blogs />} /> */}
           <Route path="/login" element={<UserForm />} />
           <Route path="/user/:userId" element={<ProfilePage />} />
           <Route path="/blog/:uuId" element={<BlogDetails />} />

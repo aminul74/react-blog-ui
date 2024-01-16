@@ -3,13 +3,14 @@ import Button from "./Button";
 import DropDownButton from "./DropDownButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../ContextApi/AuthContext";
-import axios from "axios";
 import Modal from "./Modal";
 import BlogForm from "./BlogForm";
 import ConfirmAlert from "./ConfirmAlert";
 import { BeatLoader } from "react-spinners";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Notification from "./Notification";
+import { fetchSingleBlog, updateBlog, deleteBlog } from "../utility/blogAction";
+import DisplayBlog from "./DisplayBlog";
 
 function BlogDetails() {
   const [isDropDown, setIsDropDown] = useState(false);
@@ -38,25 +39,11 @@ function BlogDetails() {
     }
   };
 
-  const { data, isLoading } = useQuery({
+  const { data: blog, isLoading } = useQuery({
     queryKey: ["blogByUUID", uuId],
-    queryFn: async () => {
-      const response = await axios.get(
-        `http://localhost:4001/api/v1/blogs/${uuId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      return response.data ? response.data[0] : [];
-    },
-    staleTime: 14000,
+    queryFn: async () => fetchSingleBlog(uuId, token),
+    staleTime: 16000,
   });
-
-  const blog = data;
 
   const onUpdateBlog = useCallback((message) => {
     setOpenModal(false);
@@ -66,18 +53,7 @@ function BlogDetails() {
 
   const { mutate, isPending, isError, Error } = useMutation({
     mutationKey: ["editBlog", uuId, blog],
-    mutationFn: async (updatedblog) => {
-      await axios.put(
-        `http://localhost:4001/api/v1/blogs/${uuId}`,
-        updatedblog,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    },
+    mutationFn: async (updatedblog) => updateBlog(uuId, updatedblog, token),
     onSuccess: () => {
       queryClient.invalidateQueries(["blogByUUID", uuId], {
         exact: true,
@@ -98,19 +74,12 @@ function BlogDetails() {
   });
 
   const {
-    mutate: deleteBlog,
+    mutate: deleteBlogMutation,
     isPending: isDeletePending,
     error,
   } = useMutation({
     mutationKey: ["deleteBlog", uuId],
-    mutationFn: async () => {
-      await axios.delete(`http://localhost:4001/api/v1/blogs/${uuId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-      });
-    },
+    mutationFn: async () => deleteBlog(uuId, token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       onDeleteBlog("Delete successful");
@@ -118,7 +87,7 @@ function BlogDetails() {
   });
 
   const handleDelete = () => {
-    deleteBlog();
+    deleteBlogMutation();
   };
 
   const onCancel = () => {
@@ -144,7 +113,7 @@ function BlogDetails() {
           />
         </div>
       )}
-      <div className="flex justify-center items-center px-20 py-2 rounded-lg">
+      <div className="flex justify-center items-center px-10 py-2 rounded-lg">
         <div className="h-full relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20 ">
           {isConfirmAlert && (
             <div>
@@ -187,37 +156,9 @@ function BlogDetails() {
             </div>
           )}
 
-          {Object.keys(blog).length > 0 && (
-            <div className="blog-details" key={blog.id}>
-              <div className="w-full mx-auto space-y-4 text-center">
-                <h1 className="text-2xl font-normal">{blog.title}</h1>
-                <div className="text-sm">
-                  by
-                  <a
-                    rel="noopener noreferrer"
-                    href="#"
-                    target="_blank"
-                    className="underline text-violet-400"
-                  >
-                    <p itemProp="name p-2 font-normal font-bold">
-                      {blog.authorId}
-                    </p>
-                  </a>
-                  <div>8 Jan 2024</div>
-                </div>
-              </div>
-              <div className="pt-12 border-t border-gray-200">
-                <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-6 md:flex-row">
-                  <div className="flex flex-col">
-                    <h4 className="text-lg font-bold">{blog.title}</h4>
-                    <p className="first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:text-black first-letter:mr-3 first-letter:float-left text-black text-xl font-normal">
-                      {blog.content}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          <div>
+            <DisplayBlog blog={blog} />
+          </div>
           <div>
             {openModal && (
               <Modal onClose={() => setOpenModal(false)} open={openModal}>
@@ -234,15 +175,12 @@ function BlogDetails() {
           <div className="flex justify-end items-center">
             <Button
               href="#"
-              className="inline-flex px-4 py-2 text-md font-medium text-center hover:bg-gray-300 mb-5"
+              className="inline-flex px-4 py-2 text-md font-medium text-center hover:bg-gray-300 mt-5"
               onClick={() => navigate("/")}
             >
               Go Back
             </Button>
           </div>
-          {/* {isDeletePending && (
-            <BeatLoader color="#ffffff" loading={isLoading} />
-          )} */}
         </div>
       </div>
     </div>
