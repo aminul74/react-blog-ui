@@ -8,7 +8,7 @@ import {
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Blogs from "./pages/BlogsPage";
-import UserForm from "./pages/UserForm";
+import UserForm from "./pages/UserFormPage";
 import ProfilePage from "./pages/ProfilePage";
 import BlogDetails from "./components/BlogDetails";
 import NotFound from "./components/NotFound";

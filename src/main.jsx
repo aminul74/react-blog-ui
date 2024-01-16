@@ -8,13 +8,13 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // <React.StrictMode>
-  <QueryClientProvider client={queryClient}>
-    <BlogProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </BlogProvider>
-  </QueryClientProvider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BlogProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BlogProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );

@@ -22,16 +22,6 @@ const BlogsPage = () => {
   const nextPage = pageNumber + 1;
   const blogsPerPage = 6;
 
-  const messageSetAs = useCallback((message) => {
-    setOpenModal(false);
-    setMessage(message);
-    setToastPopUp(true);
-  });
-
-  const onMessageHide = () => {
-    setToastPopUp(false);
-  };
-
   const changePage = (data) => {
     const selectedPage = data.selected;
     setPageNumber(selectedPage);
@@ -51,6 +41,16 @@ const BlogsPage = () => {
   const totalCount = data ? data[1] : [];
   // console.log("BLOGSSSSS", blogs[0].User.username);
 
+  const onCreateBlog = useCallback((message) => {
+    setOpenModal(false);
+    setMessage(message);
+    setToastPopUp(true);
+  });
+
+  const afterCreate = () => {
+    setToastPopUp(false);
+  };
+
   const { mutate, isPending, isError, Error } = useMutation({
     mutationFn: async (blog) => {
       await axios.post("http://localhost:4001/api/v1/blogs/create", blog, {
@@ -65,7 +65,7 @@ const BlogsPage = () => {
       queryClient.invalidateQueries(["blogs", nextPage, blogsPerPage], {
         exact: true,
       });
-      messageSetAs("Blog created successfully!");
+      onCreateBlog("Blog created successfully!");
     },
   });
 
@@ -87,7 +87,7 @@ const BlogsPage = () => {
         <div>
           <Notification
             message={message}
-            onClose={onMessageHide}
+            onClose={afterCreate}
             isVisible={setToastPopUp}
           />
         </div>
