@@ -24,19 +24,27 @@ export const registerUser = async (data) => {
 };
 
 export const loginUser = async (data) => {
-  const response = await axios.post(
-    "http://localhost:4001/api/v1/auth/login",
-    {
-      username: data.username,
-      password: data.password,
-    },
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  console.log("1st", data);
 
-  return response.data[0];
+  try {
+    const response = await axios.post(
+      "http://localhost:4001/api/v1/auth/login",
+      {
+        username: data.username,
+        password: data.password,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("2nd", data);
+
+    return response.data[0];
+  } catch (error) {
+    console.log("error in login", error);
+    throw error;
+  }
 };

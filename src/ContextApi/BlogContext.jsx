@@ -2,7 +2,7 @@ import { createContext, useState, useContext } from "react";
 const BlogContext = createContext();
 
 export const BlogProvider = ({ children }) => {
-  const [blogList, setBlogList] = useState([]);
+  // const [blogList, setBlogList] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [totalCount, setTotalCount] = useState(null);
   const updateBlogList = (newBlogList) => {
@@ -12,8 +12,8 @@ export const BlogProvider = ({ children }) => {
   return (
     <BlogContext.Provider
       value={{
-        blogList,
-        setBlogList,
+        // blogList,
+        // setBlogList,
         updateBlogList,
         pageNumber,
         setPageNumber,

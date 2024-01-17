@@ -44,6 +44,7 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
     mutationKey: ["login"],
     mutationFn: async (data) => loginUser(data),
     onSuccess: async (responseData) => {
+      console.log("RESDATA", responseData);
       const { token } = responseData;
       const userInfo = await getUser(token);
       const user = userInfo.data[0];
@@ -51,6 +52,7 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
       navigate("/");
     },
     onError: (error) => {
+      console.log("MUTATE :", error);
       errorHandler(error);
     },
   });
