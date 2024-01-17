@@ -1,13 +1,12 @@
 import React from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 const MyButtonWithToast = () => {
   const handleClick = () => {
-    // Show toast notification
     toast.success("Button Clicked!", {
       position: "top-right",
-      autoClose: 2000, // milliseconds
+      autoClose: 2000, 
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -23,9 +22,7 @@ const MyButtonWithToast = () => {
       >
         Click me!
       </button>
-
-      {/* ToastContainer should be placed once at the top level of your app */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };

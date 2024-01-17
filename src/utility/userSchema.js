@@ -1,6 +1,10 @@
 import * as yup from "yup";
+
 const userValidation = yup.object().shape({
-  username: yup.string().required("Username is required"),
+  username: yup
+    .string()
+    .required("Username is required")
+    .matches(/^\S*$/, "Space not allowed"),
   email: yup
     .string()
     .email("Invalid email")
@@ -11,10 +15,7 @@ const userValidation = yup.object().shape({
   password: yup.string().required("Password is required"),
   confirmPassword: yup.string().when("signup", {
     is: true,
-    then: yup
-      .string()
-      .required("Confirm Password is required")
-      .oneOf([yup.ref("password"), null], "Passwords must match"),
+    then: yup.string().required("Confirm Password is required"),
   }),
 });
 

@@ -20,7 +20,7 @@ const BlogsPage = () => {
   const [toastPopUp, setToastPopUp] = useState(false);
   const { pageNumber, setPageNumber } = useBlogContext();
   const nextPage = pageNumber + 1;
-  const blogsPerPage = 6;
+  const blogsPerPage = 6;  
 
   const changePage = (data) => {
     const selectedPage = data.selected;

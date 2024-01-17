@@ -10,7 +10,6 @@ const DisplayBlog = ({ blog }) => {
     month: "short",
     year: "numeric",
   });
-//   console.log("UI", blog.User.username);
 
   return (
     <div className="blog-details" key={blog.id}>
@@ -18,13 +17,9 @@ const DisplayBlog = ({ blog }) => {
         <h1 className="text-2xl font-bold">{blog.title}</h1>
         <div className="text-sm">
           by
-          <a
-            href="#"
-            target="_blank"
-            className="underline text-violet-400"
-          >
+          <a href="#" target="_blank" className="underline text-violet-400">
             <p itemProp="name p-2 font-normal font-bold">
-              {blog.User.username}
+              {blog.User?.username}
             </p>
           </a>
           <div>{formattedDate}</div>

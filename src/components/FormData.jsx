@@ -1,77 +1,62 @@
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import InputField from "./InputField";
 import Button from "./Button";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../ContextApi/AuthContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { registerUser, loginUser } from "../utility/userAction";
+import userValidation from "../utility/UserSchema";
+
 const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(userValidation),
+  });
   const { login, getUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
-  const handleLogin = async (data) => {
-    console.log("LOGIN", data.password);
-    try {
-      const response = await axios.post(
-        "http://localhost:4001/api/v1/auth/login",
-        data,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const { token } = response.data[0];
-      const userData = await getUser(token);
-      const user = userData.data[0];
+  const { mutate: createdUser } = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: async (data) => registerUser(data),
+    onSuccess: async (responseData) => {
+      const { token } = responseData;
+      const userInfo = await getUser(token);
+      const user = userInfo.data[0];
       login(token, user);
       navigate("/");
-      console.log("response", response);
-    } catch (error) {
-      console.log("error", error);
-      setErrorMessage(error.response.data[0].errMessage);
-    }
+    },
+    onError: (error) => {
+      errorHandler(error);
+    },
+  });
+
+  const handleSignup = (data) => {
+    createdUser(data);
   };
 
-  const handleSignup = async (data) => {
-    try {
-      if (data.password !== data.confirmPassword) {
-        throw new Error("Password not match");
-      }
-
-      const response = await axios.post(
-        "http://localhost:4001/api/v1/auth/register",
-        {
-          username: data.username,
-          email: data.email,
-          password: data.password,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const { token } = response.data[0];
-
-      const userData = await getUser(token);
-      const user = userData.data[0];
+  const { mutate: loggedInUser, error } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: async (data) => loginUser(data),
+    onSuccess: async (responseData) => {
+      const { token } = responseData;
+      const userInfo = await getUser(token);
+      const user = userInfo.data[0];
       login(token, user);
       navigate("/");
-    } catch (error) {
+    },
+    onError: (error) => {
       errorHandler(error);
-      setErrorMessage(error.response.data[0].errMessage);
-    }
+    },
+  });
+
+  const handleLogin = (data) => {
+    loggedInUser(data);
   };
 
   const errorHandler = (error) => {
@@ -89,11 +74,23 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
 
   const onSubmit = (data) => {
     if (signup) {
+      if (data.password !== data.confirmPassword) {
+        setErrorMessage("Passwords do not match");
+        return;
+      }
       handleSignup(data);
     } else {
       handleLogin(data);
     }
   };
+
+  // const onSubmit = (data) => {
+  //   if (signup) {
+  //     handleSignup(data);
+  //   } else {
+  //     handleLogin(data);
+  //   }
+  // };
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -109,6 +106,8 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
             required
             register={register}
           />
+
+          <p className="text-red-500">{errors.username?.message}</p>
         </div>
       )}
 
@@ -123,6 +122,7 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
             required
             register={register}
           />
+          <p className="text-red-500">{errors.email?.message}</p>
         </div>
       )}
 
@@ -137,19 +137,23 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
             required
             register={register}
           />
+
+          <p className="text-red-500">{errors.password?.message}</p>
         </div>
       )}
       {signup && (
         <div className="mt-2">
           <InputField
             id="confirmPassword"
-            name="password"
+            name="confirmPassword"
             type="password"
             label="Confirm Password"
             autoComplete="current-password"
             required
             register={register}
           />
+
+          <p className="text-red-500">{errors.confirmPassword?.message}</p>
         </div>
       )}
 
