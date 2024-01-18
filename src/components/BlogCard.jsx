@@ -12,7 +12,7 @@ function BlogCard({ blog }) {
 
   const LimitContent = ({ content }) => {
     return (
-      <div className="mb-6 text-xl font-normal">
+      <div data-testid="limitContent" className="mb-6 text-xl font-normal">
         {content && content.length > 15
           ? content.split(" ").slice(0, 15).join(" ") + "..."
           : content}
@@ -34,17 +34,22 @@ function BlogCard({ blog }) {
             alt="Avatar of Jonathan Reinink"
           />
           <div className="text-lg">
-            <p className="leading-none">{blog.User.username}</p>
-            <p>{formattedDate}</p>
+            <p data-testid="username" className="leading-none">
+              {blog.User.username}
+            </p>
+            <p data-testid="formatedData">{formattedDate}</p>
           </div>
         </div>
-        <p className="mb-6 text-2xl font-normal">{blog.title}</p>
+        <p data-testid="title" className="mb-6 text-2xl font-normal">
+          {blog.title}
+        </p>
         <LimitContent content={blog.content} />
         <div className="flex justify-end items-center">
           <Link
+            data-testid="Read"
             to={`/blog/${blog.id}`}
             className="inline-flex px-4 py-2 text-md font-medium text-center hover:bg-gray-300"
-            onClick={handleReadMore}
+            onClick={() => handleReadMore()}
           >
             Read More
           </Link>

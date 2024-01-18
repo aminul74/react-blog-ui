@@ -1,3 +1,4 @@
+import React from "react";
 import { useCallback, useState } from "react";
 import Button from "./Button";
 import DropDownButton from "./DropDownButton";
@@ -96,7 +97,10 @@ function BlogDetails() {
 
   if (isLoading || isDeletePending) {
     return (
-      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+      <div
+        data-testid="loader"
+        className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50"
+      >
         <BeatLoader color="#ffffff" loading={isLoading || isDeletePending} />
       </div>
     );
