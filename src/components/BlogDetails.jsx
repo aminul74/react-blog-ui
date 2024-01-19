@@ -31,6 +31,7 @@ function BlogDetails() {
 
   const handleButtonClick = (label) => {
     if (label === "Edit") {
+      console.log("EDIT");
       setOpenModal(true);
       setIsDropDown(false);
       setEdit(true);
@@ -152,7 +153,7 @@ function BlogDetails() {
             </div>
           ) : null}
           {isDropDown && (
-            <div className="dropDown-button">
+            <div data-testid="dropdownItems" className="dropDown-button">
               <DropDownButton
                 labels={["Edit", "Delete"]}
                 handleButtonClick={handleButtonClick}
@@ -165,15 +166,18 @@ function BlogDetails() {
           </div>
           <div>
             {openModal && (
-              <Modal onClose={() => setOpenModal(false)} open={openModal}>
-                <BlogForm
-                  onSubmit={handleSaveEdit}
-                  title={blog.title}
-                  content={blog.content}
-                  isEditing={edit}
-                  isPending={isPending}
-                />
-              </Modal>
+              <div data-testid="modal">
+                <Modal onClose={() => setOpenModal(false)} open={openModal}>
+                  <BlogForm
+                    onSubmit={handleSaveEdit}
+                    title={blog.title}
+                    content={blog.content}
+                    isEditing={edit}
+                    isPending={isPending}
+                    data-testid="blog-form"
+                  />
+                </Modal>
+              </div>
             )}
           </div>
           <div className="flex justify-end items-center">
