@@ -31,7 +31,6 @@ function BlogDetails() {
 
   const handleButtonClick = (label) => {
     if (label === "Edit") {
-      console.log("EDIT");
       setOpenModal(true);
       setIsDropDown(false);
       setEdit(true);
@@ -99,7 +98,7 @@ function BlogDetails() {
   if (isLoading || isDeletePending) {
     return (
       <div
-        data-testid="loader"
+        dataTestId="loading"
         className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50"
       >
         <BeatLoader color="#ffffff" loading={isLoading || isDeletePending} />
@@ -153,8 +152,9 @@ function BlogDetails() {
             </div>
           ) : null}
           {isDropDown && (
-            <div data-testid="dropdownItems" className="dropDown-button">
+            <div data-testid="dropDown" className="dropDown-button">
               <DropDownButton
+                data-testid="editButton"
                 labels={["Edit", "Delete"]}
                 handleButtonClick={handleButtonClick}
               />
@@ -180,8 +180,12 @@ function BlogDetails() {
               </div>
             )}
           </div>
-          <div className="flex justify-end items-center">
+          <div
+            
+            className="flex justify-end items-center"
+          >
             <Button
+            data-testid="go-back-button"
               href="#"
               className="inline-flex px-4 py-2 text-md font-medium text-center hover:bg-gray-300 mt-5"
               onClick={() => navigate("/")}

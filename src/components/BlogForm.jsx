@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { useAuth } from "../ContextApi/AuthContext";
 import Button from "./Button";
@@ -14,13 +15,8 @@ const BlogForm = ({ onSubmit, title, content, isEditing, isPending }) => {
   const [localTitle, setLocalTitle] = useState(title);
   const [localContent, setLocalContent] = useState(content);
 
-  // useEffect(() => {
-  //   setLocalTitle(title);
-  //   setLocalContent(content);
-  // }, [title, content]);
-
   const submitForm = (data) => {
-    // console.log("Inside", data);
+    console.log("TTTTTTTT", data);
     const blog = {
       title: data.title,
       content: data.content,
@@ -44,6 +40,7 @@ const BlogForm = ({ onSubmit, title, content, isEditing, isPending }) => {
             </label>
 
             <input
+              data-testid="title-input"
               type="text"
               id="title"
               {...register("title", { required: "Title is required" })}

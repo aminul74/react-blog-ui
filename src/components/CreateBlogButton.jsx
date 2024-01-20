@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 function CreateBlogButton({ onClick }) {
   return (
-    <div className="border-1F2937">
+    <div data-testid="createBlogBtn" className="border-1F2937">
       <Button
         type="button"
         className="fixed z-10 left-2 top-24 bg-slate-800 text-white text-lg font-bold py-2 px-4 rounded hover:bg-slate-700 mt-5 hover:scale-105 duration-200"

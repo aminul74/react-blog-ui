@@ -1,6 +1,7 @@
 import React from "react";
 
 const DisplayBlog = ({ blog }) => {
+  console.log("BLOGXXXX", blog.User.username);
   if (Object.keys(blog).length === 0) {
     return null;
   }
@@ -18,11 +19,11 @@ const DisplayBlog = ({ blog }) => {
         <div className="text-sm">
           by
           <a href="#" target="_blank" className="underline text-violet-400">
-            <p itemProp="name p-2 font-normal font-bold">
+            <p data-testid="username" itemProp="name p-2 font-normal font-bold">
               {blog.User?.username}
             </p>
           </a>
-          <div>{formattedDate}</div>
+          <div data-testid="date">{formattedDate}</div>
         </div>
       </div>
       <div className="pt-12 border-t border-gray-200">
