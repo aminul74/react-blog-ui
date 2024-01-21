@@ -1,3 +1,4 @@
+import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { registerUser, loginUser } from "../utility/userAction";
 import userValidation from "../utility/UserSchema";
 
-const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
+const FormData = ({ isLogin, btnLabel, signup }) => {
   const {
     register,
     handleSubmit,
@@ -40,11 +41,10 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
     createdUser(data);
   };
 
-  const { mutate: loggedInUser, error } = useMutation({
+  const { mutate: loggedInUser } = useMutation({
     mutationKey: ["login"],
     mutationFn: async (data) => loginUser(data),
     onSuccess: async (responseData) => {
-      console.log("RESDATA", responseData);
       const { token } = responseData;
       const userInfo = await getUser(token);
       const user = userInfo.data[0];
@@ -85,14 +85,6 @@ const FormData = ({ isLogin, setIsLogin, btnLabel, signup, setSignup }) => {
       handleLogin(data);
     }
   };
-
-  // const onSubmit = (data) => {
-  //   if (signup) {
-  //     handleSignup(data);
-  //   } else {
-  //     handleLogin(data);
-  //   }
-  // };
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>

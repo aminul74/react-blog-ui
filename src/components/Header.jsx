@@ -15,18 +15,16 @@ const Header = () => {
     setDropDown(!isDropDown);
   };
 
-  const onLogoutButton = () => {
-    setShowAlert(true);
-    setDropDown(false);
-  };
-
   const handleButtonClick = (label) => {
     if (label === "Account") {
       navigate(`/user/${user.id}`);
     } else if (label === "Logout") {
       onLogoutButton();
-      // logout();
     }
+  };
+  const onLogoutButton = () => {
+    setShowAlert(true);
+    setDropDown(false);
   };
 
   const onLogoutClicked = () => {
@@ -103,8 +101,9 @@ const Header = () => {
             </Button>
 
             {isDropDown && (
-              <div className="profile-dropdown ">
+              <div className="profile-dropdown">
                 <DropDownButton
+                  data-testid="dropDown"
                   labels={["Account", "Logout"]}
                   handleButtonClick={handleButtonClick}
                 />

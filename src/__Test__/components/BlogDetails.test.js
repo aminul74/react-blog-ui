@@ -20,7 +20,6 @@ jest.mock("../../utility/blogAction");
 
 describe("Blog Details", () => {
   test("Test:1 Render success with Loading", async () => {
-    // const mockQuery = jest.fn();
     const mockLoading = true;
     useQuery.mockReturnValue({
       data: null,
