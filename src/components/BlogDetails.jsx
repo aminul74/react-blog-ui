@@ -98,7 +98,7 @@ function BlogDetails() {
   if (isLoading || isDeletePending) {
     return (
       <div
-        dataTestId="loading"
+        data-testid="loader"
         className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50"
       >
         <BeatLoader color="#ffffff" loading={isLoading || isDeletePending} />
@@ -120,7 +120,7 @@ function BlogDetails() {
       <div className="flex justify-center items-center px-10 py-2 rounded-lg">
         <div className="h-full relative max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white border border-gray-300 rounded-lg shadow text-black p-20 ">
           {isConfirmAlert && (
-            <div>
+            <div data-testid="deleteConfirmation">
               <ConfirmAlert
                 onCancel={onCancel}
                 onConfirm={() => handleDelete(uuId)}
@@ -152,9 +152,8 @@ function BlogDetails() {
             </div>
           ) : null}
           {isDropDown && (
-            <div data-testid="dropDown" className="dropDown-button">
+            <div data-testid="dropdownItems" className="dropDown-button">
               <DropDownButton
-                data-testid="editButton"
                 labels={["Edit", "Delete"]}
                 handleButtonClick={handleButtonClick}
               />
@@ -180,12 +179,8 @@ function BlogDetails() {
               </div>
             )}
           </div>
-          <div
-            
-            className="flex justify-end items-center"
-          >
+          <div className="flex justify-end items-center">
             <Button
-            data-testid="go-back-button"
               href="#"
               className="inline-flex px-4 py-2 text-md font-medium text-center hover:bg-gray-300 mt-5"
               onClick={() => navigate("/")}

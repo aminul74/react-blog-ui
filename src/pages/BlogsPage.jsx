@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback } from "react";
 import { useAuth } from "../ContextApi/AuthContext";
 import BlogForm from "../components/BlogForm";
@@ -20,7 +21,7 @@ const BlogsPage = () => {
   const [toastPopUp, setToastPopUp] = useState(false);
   const { pageNumber, setPageNumber } = useBlogContext();
   const nextPage = pageNumber + 1;
-  const blogsPerPage = 6;  
+  const blogsPerPage = 6;
 
   const changePage = (data) => {
     const selectedPage = data.selected;
@@ -34,7 +35,6 @@ const BlogsPage = () => {
 
   const blogs = data ? data[0] : [];
   const totalCount = data ? data[1] : [];
-  // console.log("BLOGSSSSS", blogs[0].User.username);
   const onCreateBlog = useCallback((message) => {
     setOpenModal(false);
     setMessage(message);
@@ -61,7 +61,10 @@ const BlogsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+      <div
+        data-testid="loading-spinner"
+        className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-75 z-50"
+      >
         <BeatLoader color="#ffffff" loading={isLoading} />
       </div>
     );
@@ -79,15 +82,24 @@ const BlogsPage = () => {
         </div>
       )}
 
-      {token && <CreateBlogButton onClick={() => setOpenModal(true)} />}
+      {token && (
+        <div data-testid="Create Blog">
+          <CreateBlogButton onClick={() => setOpenModal(true)} />
+        </div>
+      )}
 
       <div>
-        <Modal onClose={() => setOpenModal(false)} open={openModal}>
+        <Modal
+          data-testid="modal"
+          onClose={() => setOpenModal(false)}
+          open={openModal}
+        >
           <BlogForm
             onSubmit={handleCreateBlog}
             title=""
             content=""
             isPending={isPending}
+            data-testid="blog-form"
           />
         </Modal>
       </div>

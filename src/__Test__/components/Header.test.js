@@ -34,10 +34,8 @@ describe("Header", () => {
     if (button) {
       userEvent.click(button);
       await waitFor(() => {
-        expect(queryByTestId("dropDownContent")).toBeInTheDocument();
+        expect(screen.queryByTestId("dropDownContent")).toBeInTheDocument();
       });
-    } else {
-      console.error("Dropdown button not found");
-    }
+    } 
   });
 });

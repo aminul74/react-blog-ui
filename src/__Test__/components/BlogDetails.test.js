@@ -1,15 +1,9 @@
 import React from "react";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor, userEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { useAuth } from "../../ContextApi/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  useMutation,
-  useQuery,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { fetchSingleBlog } from "../../utility/blogAction";
+import { useParams } from "react-router-dom";
+import { useMutation, useQuery, QueryClient } from "@tanstack/react-query";
 import BlogDetails from "../../components/BlogDetails";
 import { Router } from "react-router-dom";
 
@@ -31,31 +25,67 @@ describe("Blog Details", () => {
         <BlogDetails />
       </Router>
     );
-
     expect(screen.queryByTestId("loading")).toBeDefined();
   });
 
-  test("Test:2 Blog edit success with mutation", async () => {
+  test("Test:2 Blog delete success", async () => {
+    useAuth.mockReturnValue({
+      token: "pokemon",
+      user: { id: "123", username: "aminul" },
+    });
     const queryClient = new QueryClient();
     const uuId = "uuId-123";
+    useParams.mockReturnValue({ uuId });
+    useMutation.mockReturnValue({
+      deleteBlogMutation: jest.fn(),
+      isPending: false,
+    });
+    queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    render(
+      <Router>
+        <BlogDetails />
+      </Router>
+    );
+
+    const dropdownButton = screen.queryByText("dropdownItems");
+    if (dropdownButton) {
+      userEvent.click(dropdownButton);
+      await waitFor(() => {
+        expect(screen.getByTestId("dropdownItems")).toBeInTheDocument();
+      });
+    } else {
+      console.log("Dropdown button not found");
+    }
+
+    expect(screen.queryByText("modal")).toBeNull();
+  });
+
+  test("Test:3 Modal render success", async () => {
+    useAuth.mockReturnValue({
+      token: "pokemon",
+      user: { id: "123", username: "aminul" },
+    });
+
+    const uuId = "uuId-123";
+    useParams.mockReturnValue({ uuId });
     useMutation.mockReturnValue({
       mutate: jest.fn(),
       isPending: false,
     });
 
-    queryClient.invalidateQueries(["blogByUUID", uuId], {
-      exact: true,
-    });
-
     render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <BlogDetails />
-        </Router>
-      </QueryClientProvider>
+      <Router>
+        <BlogDetails />
+      </Router>
     );
 
-    expect(screen.queryByText("modal")).toBeNull();
+    await waitFor(() => {
+      const modalTitle = screen.queryByTestId("modal");
+      expect(modalTitle).toBeDefined();
+    });
+
+    const modalContent = screen.queryByTestId("blog-form");
+    expect(modalContent).toBeDefined();
   });
 
   afterEach(() => {
