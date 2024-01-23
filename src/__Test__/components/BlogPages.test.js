@@ -75,7 +75,7 @@ describe("BlogsPage", () => {
         expect(screen.getByTestId("Create Blog")).toBeInTheDocument();
       });
     } else {
-      console.log();
+      // console.log();
     }
 
     await waitFor(() => {

@@ -11,10 +11,10 @@ import Blogs from "./pages/BlogsPage";
 import UserForm from "./pages/UserFormPage";
 import ProfilePage from "./pages/ProfilePage";
 import BlogDetails from "./components/BlogDetails";
-import NotFound from "./components/NotFound";
+// import NotFound from "./components/NotFound";
 import About from "./pages/About";
 import ConfirmAlert from "./components/ConfirmAlert";
-import Check from "./components/Check";
+// import Check from "./components/Check";
 
 function App() {
   return (
@@ -22,8 +22,8 @@ function App() {
       <Header />
       <div style={{ minHeight: "100vh", position: "relative" }}>
         <Routes>
-          <Route path="/not" element={<NotFound />} />
-          <Route path="/check" element={<Check />} />
+          {/* <Route path="/not" element={<NotFound />} /> */}
+          {/* <Route path="/check" element={<Check />} /> */}
           <Route path="/confirm" element={<ConfirmAlert />} />
           <Route path="/" element={<Blogs />} />
           <Route path="/login" element={<UserForm />} />

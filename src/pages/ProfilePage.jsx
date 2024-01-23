@@ -1,10 +1,11 @@
+import React from "react";
 import { useCallback, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Button from "../components/Button";
 import { useAuth } from "../ContextApi/AuthContext";
-import userProfileImage from "../assets/userProfile.png";
+// import userProfileImage from "../assets/userProfile.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ConfirmAlert from "../components/ConfirmAlert";
@@ -65,7 +66,8 @@ const ProfilePage = () => {
       );
     },
 
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // console.log("Update",data);
       onPasswordChange("Password update successfully!");
     },
   });
@@ -95,7 +97,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-5">
+    <div
+      data-testid="profile-render"
+      className="flex items-center justify-center mt-5"
+    >
       {toastPopUp && (
         <div>
           <Notification
@@ -109,7 +114,7 @@ const ProfilePage = () => {
       <div className="max-w-2xl sm:max-w-2xl md:max-w-2xl lg:max-w-4xl bg-white items-center p-20 border rounded text-center text-gray-500">
         <img
           className="w-32 h-32 rounded-full mx-auto"
-          src={userProfileImage}
+          src={"../assets/userProfile.png"}
           alt=""
         />
         <div className="text-sm mt-5">
@@ -125,7 +130,10 @@ const ProfilePage = () => {
         {token && (
           <div className="max-w-lg mx-auto mt-8 p-12 bg-salate-200 rounded-md shadow-md">
             <p className="text-red-500 text-center">{errMessage}</p>
-            <form onSubmit={handleSubmit(handlePasswordChange)}>
+            <form
+              data-testid="form-submit"
+              onSubmit={handleSubmit(handlePasswordChange)}
+            >
               <div className="mb-4">
                 <h3 className="text-xl font-semibold text-black mb-2">
                   Change Password
@@ -141,6 +149,7 @@ const ProfilePage = () => {
                   {...register("oldPassword")}
                   placeholder="Old Password"
                   className="w-full px-3 py-2 border rounded mb-2"
+                  data-testid="old-password-input"
                 />
                 {errors.oldPassword && (
                   <p className="text-red-500 text-sm mb-2">
@@ -160,6 +169,7 @@ const ProfilePage = () => {
                   {...register("newPassword")}
                   placeholder="New Password"
                   className="w-full px-3 py-2 border rounded mb-2"
+                  data-testid="new-password-input"
                 />
                 {errors.newPassword && (
                   <p className="text-red-500 text-sm mb-2">
@@ -178,6 +188,7 @@ const ProfilePage = () => {
                   {...register("confirmNewPassword")}
                   placeholder="Confirm New Password"
                   className="w-full px-3 py-2 border rounded mb-2"
+                  data-testid="confirm-new-password-input"
                 />
                 {errors.confirmNewPassword && (
                   <p className="text-red-500 text-sm mb-2">

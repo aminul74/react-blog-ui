@@ -54,7 +54,7 @@ describe("Blog Details", () => {
         expect(screen.getByTestId("dropdownItems")).toBeInTheDocument();
       });
     } else {
-      console.log("Dropdown button not found");
+      // console.log("Dropdown button not found");
     }
 
     expect(screen.queryByText("modal")).toBeNull();
